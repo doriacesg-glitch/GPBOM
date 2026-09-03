@@ -1,7 +1,7 @@
 <title>GPBOM 綠色產品管理系統</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700&family=Rajdhani:wght@500;600;700&family=Carlito:wght@400;700&family=Chakra+Petch:wght@500;600&family=Share+Tech+Mono&family=Noto+Sans+TC:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700&family=Rajdhani:wght@500;600;700&family=Carlito:ital,wght@0,400;0,700;1,400&family=Noto+Sans+TC:wght@400;500;600;700&display=swap">
 
 <style>
 /* =========================================================
@@ -41,10 +41,12 @@
   --danger:    #FF4B6A;
   --danger-bg: rgba(255, 75, 106, 0.10);
 
-  --disp: "Orbitron", "Rajdhani", "Chakra Petch", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --disp: "Orbitron", "Rajdhani", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
   --sans: "Calibri", "Carlito", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", ui-sans-serif, system-ui, sans-serif;
-  --num:  "Rajdhani", "Chakra Petch", "Calibri", "Carlito", sans-serif; /* bold HUD numerals */
-  --mono: "Share Tech Mono", "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --num:  "Rajdhani", "Calibri", "Carlito", sans-serif; /* bold HUD numerals — dashboard emphasis only */
+  /* All English previously mono (PN codes, CAS, dates, PCN No.) is now Calibri
+     per project rule "所有英文字體統一為 Calibri, 除非介面主標題". */
+  --mono: "Calibri", "Carlito", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", ui-sans-serif, system-ui, sans-serif;
 
   --gap: 20px;
   --focus: 0 0 0 2px rgba(0,255,255,.35), 0 0 20px rgba(0,255,255,.35);
@@ -124,7 +126,14 @@ body::after {
   letter-spacing: .28em; text-transform: uppercase;
   color: var(--accent-dim);
 }
-.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; letter-spacing: .04em; }
+/* .mono is now a Calibri class kept for tabular alignment + slightly tighter
+   tracking; naming preserved so all existing markup keeps working. */
+.mono {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  letter-spacing: 0;
+}
 .num  { font-variant-numeric: tabular-nums; text-align: right; }
 h1, h2, h3 { font-family: var(--disp); font-weight: 600; letter-spacing: .04em; margin: 0; }
 h1 { font-size: 20px; }
