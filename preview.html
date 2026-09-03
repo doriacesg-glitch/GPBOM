@@ -433,7 +433,7 @@ tr.row-ok      td:first-child { box-shadow: inset 3px 0 0 var(--ok); }
 .tree li { padding: 3px 0; }
 .node {
   display: grid;
-  grid-template-columns: 18px minmax(0,1fr) 70px 90px 130px;
+  grid-template-columns: 18px minmax(0,1fr) 90px 90px 130px;
   gap: 12px; align-items: center;
   padding: 6px 10px; cursor: pointer;
   border-left: 2px solid transparent;
@@ -441,17 +441,60 @@ tr.row-ok      td:first-child { box-shadow: inset 3px 0 0 var(--ok); }
 .node:hover { background: var(--glass-hi); border-left-color: var(--accent); }
 .node .tog {
   cursor: pointer; color: var(--accent); text-align: center;
-  font: 600 10px/16px var(--mono); user-select: none;
-  border: 1px solid var(--line); width: 16px; height: 16px; display: inline-grid; place-items: center;
+  font: 600 11px/16px var(--sans); user-select: none;
+  border: 1px solid var(--line); width: 18px; height: 18px; display: inline-grid; place-items: center;
   background: var(--accent-bg);
 }
 .node .tog.leaf { border-color: transparent; color: var(--muted-2); background: transparent; }
-.node .pn { font: 400 12.5px/1.2 var(--mono); color: var(--ink); letter-spacing: .06em; }
-.node .nm { color: var(--ink-2); font-size: 12.5px; }
-.node .qty, .node .wg { font: 400 11px/1 var(--mono); color: var(--muted); text-align: right; letter-spacing: .06em; }
-.node .pct { font: 400 11px/1 var(--mono); color: var(--muted); display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+.node .pn { font: 500 13px/1.2 var(--sans); color: var(--ink); letter-spacing: 0; }
+.node .nm { color: var(--ink-2); font-size: 13px; }
+.node .pos, .node .wg { font: 400 12px/1 var(--sans); color: var(--muted); text-align: right; letter-spacing: 0; }
+.node .pos { text-align: right; }
+.node .pct { font: 400 12px/1 var(--sans); color: var(--muted); display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
 .node.obsolete .pn { color: var(--danger); text-decoration: line-through; }
+
+/* Material layer — purple side identity so viewer knows this is
+   inside the part (drilled from part.materials), not another sub-part. */
+.node.material { border-left: 2px solid var(--purple); }
+.node.material:hover { background: rgba(191,0,255,.06); border-left-color: var(--purple); }
+.node.material .tog {
+  color: var(--purple); background: rgba(191,0,255,.12);
+  border-color: rgba(191,0,255,.35);
+}
+.node.material .pn { color: var(--purple); }
+
+/* Substance list (level 3 — inline drill from material) */
+.bom-subs {
+  margin: 2px 0 6px 40px;
+  border-left: 1px dashed rgba(191,0,255,.35);
+  padding: 4px 0 6px 12px;
+  display: block;
+}
+li.hidden > .bom-subs { display: none; }
+.bom-sub {
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1.6fr) minmax(0, .9fr) 78px 100px minmax(0, 1.4fr);
+  gap: 10px; align-items: center;
+  padding: 5px 8px; border-bottom: 1px dashed var(--line-3);
+}
+.bom-sub:last-child { border-bottom: 0; }
+.bom-sub-tog { color: var(--purple); font-size: 12px; text-align: center; }
+.bom-sub-name { font-size: 12.5px; color: var(--ink-2); }
+.bom-sub-cas { font-size: 12px; color: var(--muted); }
+.bom-sub-wg, .bom-sub-ppm {
+  font: 500 12px/1 var(--num); color: var(--ink); text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.bom-sub-ppm { color: var(--accent); }
+.bom-sub-reg { display: flex; flex-wrap: wrap; gap: 4px; }
+.bom-sub-reg .pill { font-size: 9px; padding: 3px 6px; letter-spacing: .06em; }
+
 li.hidden > ul { display: none; }
+
+@media (max-width: 1200px) {
+  .bom-sub { grid-template-columns: 14px 1fr 1fr; row-gap: 4px; }
+  .bom-sub-reg { grid-column: 2 / -1; }
+}
 
 /* Meter */
 .meter {
@@ -1160,7 +1203,11 @@ li.hidden > ul { display: none; }
           <button class="btn ghost">匯出 Excel →</button>
         </div>
         <div class="bom">
-          <div class="bom-hint">點三角形展開 / 收合 — <span class="mono">×數量 · 重量 g · 占父件%</span></div>
+          <div class="bom-hint">
+            青色 <span class="mono" style="color:var(--accent)">+</span> = 結構層(零件父子);
+            紫色 <span class="mono" style="color:var(--purple)">+</span> = 材料層,再展開即物質(唯讀,如需編輯請至該零件的<b>材料組成</b>)·
+            欄位:位置(ref-des)· 重量 g · 占父件 %
+          </div>
           <ul class="tree" id="bomTree"></ul>
         </div>
       </div>
@@ -2038,26 +2085,64 @@ const PARTS = [
   ["CAP-OLD-100nF-A","Chip Cap 100nF (已失效)","GRM155 · Murata","Uniohm",     0,"2024-03-11","obsolete", null],
 ];
 
+// BOM tree: 兩層 layer —
+//   layer:"part"     結構層(藍/青色系), 顯示 pos(U1,C1..C24 等)
+//   layer:"material" 材料層(紫色系,唯讀 drill),下含 substances
+// substances 為物質 [name, cas, wg_g, ppm, [regBadges...] ]
 const BOM = [
-  { pn:"ASSY-CTRL-01", nm:"控制器組件 Rev.C", qty:1, wg:485.0, pct:100, status:"active", children:[
-    { pn:"PCB-CTRL-4L-01", nm:"PCB 4L FR-4 HASL", qty:1, wg:112.0, pct:23.1, status:"active", children:[
-      { pn:"CU-FOIL-35UM", nm:"銅箔 35μm", qty:1, wg:28.4, pct:25.4, status:"active" },
-      { pn:"FR4-CORE-1.6", nm:"FR-4 玻纖基材", qty:1, wg:78.2, pct:69.8, status:"active" },
+  { layer:"part", pn:"ASSY-CTRL-01", nm:"控制器組件 Rev.C", pos:"—", wg:485.0, pct:100, status:"active", children:[
+    { layer:"part", pn:"PCB-CTRL-4L-01", nm:"PCB 4L FR-4 HASL", pos:"P1", wg:112.0, pct:23.1, status:"active", children:[
+      { layer:"material", pn:"MAT-CU-FOIL", nm:"銅箔 35μm", wg:28.4, pct:25.4, status:"active",
+        substances:[["Cu · 銅","7440-50-8",28.4,999500,["RoHS ✓","未列 SVHC"]]] },
+      { layer:"material", pn:"MAT-FR4-CORE", nm:"FR-4 玻纖基材", wg:78.2, pct:69.8, status:"active",
+        substances:[
+          ["Epoxy Resin","25068-38-6",39.1,500000,["RoHS ✓"]],
+          ["Glass Fiber","65997-17-3",35.2,450000,["RoHS ✓"]],
+          ["Sb₂O₃ · 三氧化銻","1309-64-4",0.55,7000,["RoHS ✓","SVHC 監控"]],
+        ]},
     ]},
-    { pn:"MCU-STM32F103C8T6", nm:"ARM Cortex-M3 MCU (LQFP-48)", qty:1, wg:0.32, pct:0.07, status:"active", children:[
-      { pn:"MAT-EMC-BLK", nm:"環氧封裝樹脂 (含 Carbon Black)", qty:1, wg:0.24, pct:75.0, status:"active" },
-      { pn:"MAT-CU-LF",   nm:"銅腳架 Cu ≥99.9%", qty:1, wg:0.06, pct:18.8, status:"active" },
-      { pn:"SOL-BALL",    nm:"焊錫接點 SnAg", qty:48, wg:0.02, pct:6.3, status:"active" },
+    { layer:"part", pn:"MCU-STM32F103C8T6", nm:"ARM Cortex-M3 MCU (LQFP-48)", pos:"U1", wg:0.32, pct:0.07, status:"active", children:[
+      { layer:"material", pn:"MAT-EMC-BLK", nm:"環氧封裝樹脂", wg:0.24, pct:75.0, status:"active",
+        substances:[
+          ["Epoxy Resin","25068-38-6",0.192,800000,["RoHS ✓"]],
+          ["Silica Filler","7631-86-9",0.024,100000,["RoHS ✓"]],
+          ["Carbon Black","1333-86-4",0.024,100000,["RoHS ✓","未列 SVHC"]],
+        ]},
+      { layer:"material", pn:"MAT-CU-LF", nm:"銅腳架 Cu ≥99.9%", wg:0.06, pct:18.8, status:"active",
+        substances:[["Cu · 銅","7440-50-8",0.0599,999000,["RoHS ✓"]]] },
+      { layer:"material", pn:"MAT-SOL-BALL", nm:"焊錫接點 SnAg (48 joints)", wg:0.02, pct:6.3, status:"active",
+        substances:[
+          ["Sn · 錫","7440-31-5",0.0192,960000,["RoHS ✓"]],
+          ["Ag · 銀","7440-22-4",0.0008,40000,["RoHS ✓"]],
+        ]},
     ]},
-    { pn:"CAP-C0603-100nF", nm:"Chip Cap 100nF X7R", qty:24, wg:0.024, pct:0.005, status:"active" },
-    { pn:"RES-0805-10K",    nm:"Chip Res 10kΩ 1%", qty:18, wg:0.018, pct:0.004, status:"active" },
-    { pn:"LED-3528-R",      nm:"LED 3528 Red (EOL 進行中)", qty:2, wg:0.05, pct:0.010, status:"pending" },
-    { pn:"HSG-PC-BLK-01",   nm:"ABS 黑色外殼 (含 Carbon Black)", qty:1, wg:340, pct:70.1, status:"active", children:[
-      { pn:"MAT-ABS-BLK", nm:"ABS 樹脂 · 黑色", qty:1, wg:326, pct:95.9, status:"active" },
-      { pn:"MAT-CB",      nm:"Carbon Black (色料)", qty:1, wg:8.5, pct:2.5, status:"active" },
-      { pn:"MAT-STAB",    nm:"熱穩定劑", qty:1, wg:5.5, pct:1.6, status:"active" },
+    { layer:"part", pn:"CAP-C0603-100nF", nm:"Chip Cap 100nF X7R", pos:"C1..C24", wg:0.024, pct:0.005, status:"active", children:[
+      { layer:"material", pn:"MAT-CERAMIC", nm:"陶瓷介電體", wg:0.018, pct:75.0, status:"active",
+        substances:[
+          ["BaTiO₃ · 鈦酸鋇","1313-99-1",0.0153,850000,["RoHS ✓","未列 SVHC"]],
+          ["SiO₂","7631-86-9",0.0017,92000,["RoHS ✓"]],
+        ]},
+      { layer:"material", pn:"MAT-ELECTRODE", nm:"Ni 電極", wg:0.0045, pct:18.8, status:"active",
+        substances:[["Ni · 鎳","7440-02-0",0.0045,1000000,["RoHS ✓","SVHC 監控","Prop 65 列管"]]] },
+      { layer:"material", pn:"MAT-SN-TERM", nm:"Sn 端子鍍層", wg:0.0015, pct:6.2, status:"active",
+        substances:[["Sn · 錫","7440-31-5",0.0015,1000000,["RoHS ✓"]]] },
     ]},
-    { pn:"CAP-OLD-100nF-A", nm:"Chip Cap 100nF (已失效替代)", qty:0, wg:0, pct:0, status:"obsolete" },
+    { layer:"part", pn:"RES-0805-10K", nm:"Chip Res 10kΩ 1%", pos:"R1..R18", wg:0.018, pct:0.004, status:"active" },
+    { layer:"part", pn:"LED-3528-R", nm:"LED 3528 Red (EOL 進行中)", pos:"LED1..LED2", wg:0.05, pct:0.010, status:"pending" },
+    { layer:"part", pn:"HSG-PC-BLK-01", nm:"ABS 黑色外殼", pos:"H1", wg:340, pct:70.1, status:"active", children:[
+      { layer:"material", pn:"MAT-ABS-BLK", nm:"ABS 樹脂 · 黑色", wg:326, pct:95.9, status:"active",
+        substances:[
+          ["Acrylonitrile Butadiene Styrene","9003-56-9",325.8,999300,["RoHS ✓"]],
+        ]},
+      { layer:"material", pn:"MAT-CB", nm:"Carbon Black(色料)", wg:8.5, pct:2.5, status:"active",
+        substances:[["Carbon Black","1333-86-4",8.5,1000000,["RoHS ✓","未列 SVHC"]]] },
+      { layer:"material", pn:"MAT-STAB", nm:"熱穩定劑", wg:5.5, pct:1.6, status:"active",
+        substances:[
+          ["Ca/Zn Stearate","91031-63-9",5.2,945000,["RoHS ✓"]],
+          ["Epoxidized Soybean Oil","8013-07-8",0.3,55000,["RoHS ✓"]],
+        ]},
+    ]},
+    { layer:"part", pn:"CAP-OLD-100nF-A", nm:"Chip Cap 100nF (已失效替代)", pos:"—", wg:0, pct:0, status:"obsolete" },
   ]}
 ];
 
@@ -2111,31 +2196,59 @@ document.getElementById("partRows").addEventListener("click", (e) => {
   openDetail(r[0], r[1], r[2], r[3], r[6], r[7]);
 });
 
-function renderNode(n, open=false){
+function renderSubstances(subs){
+  return subs.map(s => `
+    <div class="bom-sub">
+      <span class="bom-sub-tog">·</span>
+      <span class="bom-sub-name">${s[0]}</span>
+      <span class="bom-sub-cas mono">${s[1]}</span>
+      <span class="bom-sub-wg mono num">${s[2]<0.001 ? s[2].toFixed(5) : s[2].toFixed(3)} g</span>
+      <span class="bom-sub-ppm mono num">${s[3].toLocaleString()} ppm</span>
+      <span class="bom-sub-reg">
+        ${s[4].map(r => `<span class="pill ${
+          r.startsWith("RoHS") ? "pill-ok" :
+          r.includes("SVHC") ? "pill-warn" :
+          r.includes("Prop 65") ? "pill-warn" :
+          "pill-muted"
+        }">${r}</span>`).join("")}
+      </span>
+    </div>`).join("");
+}
+
+function renderNode(n, open=false, isRoot=false){
+  const isMat = n.layer === "material";
   const kids = (n.children||[]).length
     ? `<ul>${n.children.map(c => renderNode(c, false)).join("")}</ul>` : "";
-  const kls = (n.status === "obsolete") ? "obsolete" : "";
+  const hasSubs = (n.substances||[]).length > 0;
+  const kls = [n.status === "obsolete" ? "obsolete" : "",
+               isMat ? "material" : "part"].filter(Boolean).join(" ");
   const meterCls = (n.pct >= 50) ? "meter hot" : "meter";
   const meter = (n.pct && n.pct < 100)
     ? `<span class="${meterCls}"><i style="width:${Math.min(100,n.pct)}%"></i></span>` : "";
-  const tog = kids ? (open ? "−" : "+") : "·";
-  const togCls = kids ? "tog" : "tog leaf";
+  const canOpen = (kids || hasSubs) && !isRoot;
+  const tog = canOpen ? (open ? "−" : "+") : (isMat ? "◆" : "·");
+  const togCls = canOpen ? "tog" : "tog leaf";
+  const posText = isMat ? "—" : (n.pos || "—");
+
   return `<li class="${open ? "" : "hidden"}">
     <div class="node ${kls}" tabindex="0" role="treeitem">
       <span class="${togCls}" onclick="toggle(event, this)">${tog}</span>
       <span><span class="pn">${n.pn}</span> <span class="nm">— ${n.nm}</span> ${n.status!=='active'?statusPill(n.status):""}</span>
-      <span class="qty">×${n.qty}</span>
-      <span class="wg">${n.wg?n.wg.toFixed(3)+' g':''}</span>
-      <span class="pct">${n.pct?n.pct.toFixed(1)+' %':''} ${meter}</span>
+      <span class="pos mono">${posText}</span>
+      <span class="wg mono num">${n.wg ? n.wg.toFixed(3)+' g' : ''}</span>
+      <span class="pct mono num">${n.pct ? n.pct.toFixed(1)+' %' : ''} ${meter}</span>
     </div>
+    ${hasSubs ? `<div class="bom-subs">${renderSubstances(n.substances)}</div>` : ""}
     ${kids}
   </li>`;
 }
-document.getElementById("bomTree").innerHTML = BOM.map(n => renderNode(n, true)).join("");
+document.getElementById("bomTree").innerHTML = BOM.map(n => renderNode(n, true, true)).join("");
 window.toggle = (evt, el) => {
   evt.stopPropagation();
   const li = el.closest("li");
-  if (!li.querySelector(":scope > ul")) return;
+  // openable if has children ul OR has substance drill panel
+  const openable = li.querySelector(":scope > ul") || li.querySelector(":scope > .bom-subs");
+  if (!openable) return;
   const hidden = li.classList.toggle("hidden");
   el.textContent = hidden ? "+" : "−";
 };
