@@ -1,0 +1,642 @@
+<title>GPBOM Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<style>
+:root {
+  --bg:        #F4F6F8;
+  --surface:   #FFFFFF;
+  --surface-2: #FBFCFD;
+  --line:      #E2E7EC;
+  --line-2:    #EEF1F4;
+  --ink:       #0E1B2C;
+  --ink-2:     #364256;
+  --muted:     #6B7A8F;
+  --muted-2:   #94A0B2;
+  --accent:    #0E7C86;
+  --accent-ink:#075860;
+  --accent-bg: #E4F1F2;
+  --ok:        #15803D;
+  --ok-bg:     #E4F2E9;
+  --warn:      #B45309;
+  --warn-bg:   #FCF0DC;
+  --danger:    #B91C1C;
+  --danger-bg: #FCE4E4;
+  --shadow-sm: 0 1px 2px rgba(15,27,44,.04);
+  --shadow-md: 0 4px 12px rgba(15,27,44,.06);
+  --sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Noto Sans TC", sans-serif;
+  --disp: "Inter Tight", var(--sans);
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+:root:not([data-theme="light"]) {
+  @media (prefers-color-scheme: dark) {
+    --bg:        #0B1220;
+    --surface:   #101A2B;
+    --surface-2: #0E1626;
+    --line:      #1E2C41;
+    --line-2:    #172232;
+    --ink:       #E7ECF3;
+    --ink-2:     #B7C2D2;
+    --muted:     #8090A6;
+    --muted-2:   #5F6E85;
+    --accent:    #35B0BB;
+    --accent-ink:#7DD5DD;
+    --accent-bg: #113238;
+    --ok:        #4ADE80;
+    --ok-bg:     #10281A;
+    --warn:      #F5B061;
+    --warn-bg:   #2E1F0E;
+    --danger:    #F87171;
+    --danger-bg: #2A1414;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.4);
+  }
+}
+[data-theme="dark"] {
+  --bg:        #0B1220;
+  --surface:   #101A2B;
+  --surface-2: #0E1626;
+  --line:      #1E2C41;
+  --line-2:    #172232;
+  --ink:       #E7ECF3;
+  --ink-2:     #B7C2D2;
+  --muted:     #8090A6;
+  --muted-2:   #5F6E85;
+  --accent:    #35B0BB;
+  --accent-ink:#7DD5DD;
+  --accent-bg: #113238;
+  --ok:        #4ADE80;
+  --ok-bg:     #10281A;
+  --warn:      #F5B061;
+  --warn-bg:   #2E1F0E;
+  --danger:    #F87171;
+  --danger-bg: #2A1414;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.4);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+       font: 400 14px/1.5 var(--sans); -webkit-font-smoothing: antialiased; }
+
+/* App shell ---------------------------------------------------------- */
+.shell { display: grid; grid-template-columns: 232px 1fr; min-height: 100vh; }
+
+aside.nav {
+  background: var(--surface); border-right: 1px solid var(--line);
+  display: flex; flex-direction: column; padding: 18px 12px; gap: 4px;
+}
+.brand {
+  display:flex; align-items:center; gap: 10px; padding: 4px 8px 16px;
+  font: 700 17px/1 var(--disp); letter-spacing: -0.01em; color: var(--ink);
+}
+.brand-mark {
+  width: 26px; height: 26px; border-radius: 6px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-ink) 100%);
+  display:grid; place-items:center; color:white; font: 700 12px/1 var(--mono);
+}
+.brand small { font: 500 10px/1 var(--mono); color: var(--muted); letter-spacing: .12em; }
+.nav-section {
+  font: 600 10px/1 var(--sans); color: var(--muted-2);
+  letter-spacing: .14em; text-transform: uppercase; padding: 12px 10px 6px;
+}
+.nav-item {
+  display:flex; align-items:center; gap: 10px; padding: 7px 10px;
+  border-radius: 6px; color: var(--ink-2); cursor: pointer;
+  font-size: 13px; user-select: none;
+}
+.nav-item:hover { background: var(--line-2); color: var(--ink); }
+.nav-item.active { background: var(--accent-bg); color: var(--accent-ink); font-weight: 600; }
+.nav-item .badge { margin-left: auto; }
+.nav-user {
+  margin-top: auto; padding: 12px 10px; border-top: 1px solid var(--line-2);
+  display:flex; align-items:center; gap:10px; font-size:12px; color:var(--muted);
+}
+.avatar {
+  width: 28px; height: 28px; border-radius: 50%; background: var(--accent);
+  color: white; display:grid; place-items:center; font: 600 12px/1 var(--sans);
+}
+
+main { padding: 22px 28px 40px; overflow-x: hidden; }
+.page-head {
+  display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px;
+}
+h1 { font: 600 20px/1.2 var(--disp); margin: 0; letter-spacing: -0.01em;
+     text-wrap: balance; }
+.crumb { font: 500 12px/1 var(--mono); color: var(--muted); letter-spacing: .04em; }
+.subtitle { color: var(--muted); font-size: 13px; margin: 2px 0 20px; }
+
+/* KPI strip ---------------------------------------------------------- */
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+.kpi {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 8px; padding: 12px 14px 14px; box-shadow: var(--shadow-sm);
+  position: relative; overflow: hidden;
+}
+.kpi .lab {
+  font: 600 10px/1 var(--sans); color: var(--muted); letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.kpi .num {
+  font: 600 26px/1.05 var(--disp); margin-top: 6px; letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.kpi .delta { font: 500 11px/1 var(--mono); color: var(--muted); margin-top: 4px; }
+.kpi.danger .num { color: var(--danger); }
+.kpi.warn   .num { color: var(--warn); }
+.kpi.ok     .num { color: var(--ok); }
+
+/* Cards / tables ----------------------------------------------------- */
+.card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 8px; box-shadow: var(--shadow-sm); overflow: hidden;
+}
+.card-head {
+  display:flex; align-items:center; gap: 10px; padding: 12px 16px;
+  border-bottom: 1px solid var(--line-2);
+}
+.card-head h2 { font: 600 13px/1 var(--sans); margin: 0; }
+.card-head .actions { margin-left: auto; display:flex; gap: 8px; }
+
+.toolbar { display: flex; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--line-2); flex-wrap: wrap; }
+input, select {
+  font: inherit; color: var(--ink); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px;
+  outline: none;
+}
+input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-bg); }
+button.btn {
+  font: 500 13px/1 var(--sans); padding: 7px 12px;
+  border-radius: 6px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--ink); cursor: pointer;
+}
+button.btn.primary {
+  background: var(--accent); border-color: var(--accent); color: white;
+}
+button.btn.ghost { border-color: transparent; color: var(--muted); }
+button.btn:hover { border-color: var(--accent); }
+
+.tbl-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th, td {
+  padding: 9px 14px; text-align: left; font-size: 13px;
+  border-bottom: 1px solid var(--line-2); vertical-align: middle;
+}
+th {
+  font: 600 11px/1 var(--sans); color: var(--muted);
+  letter-spacing: .06em; text-transform: uppercase; background: var(--surface-2);
+  position: sticky; top: 0;
+}
+tbody tr:hover { background: var(--surface-2); }
+td.mono, .mono { font-family: var(--mono); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Badges / pills ----------------------------------------------------- */
+.pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  font: 500 11px/1 var(--sans); padding: 3px 8px 4px; border-radius: 999px;
+  letter-spacing: .02em;
+}
+.pill-ok      { background: var(--ok-bg);     color: var(--ok); }
+.pill-warn    { background: var(--warn-bg);   color: var(--warn); }
+.pill-danger  { background: var(--danger-bg); color: var(--danger); }
+.pill-muted   { background: var(--line-2);    color: var(--muted); }
+.pill-accent  { background: var(--accent-bg); color: var(--accent-ink); }
+.dot { width:6px; height:6px; border-radius: 50%; background: currentColor; display:inline-block; }
+
+/* Severity stripe on rows */
+tr.row-expired td:first-child { box-shadow: inset 3px 0 0 var(--danger); }
+tr.row-duesoon td:first-child { box-shadow: inset 3px 0 0 var(--warn); }
+tr.row-ok      td:first-child { box-shadow: inset 3px 0 0 var(--ok); }
+
+/* BOM tree ----------------------------------------------------------- */
+.bom { padding: 12px 20px 20px; }
+.bom-hint { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+.tree      { list-style: none; margin: 0; padding: 0; }
+.tree ul   { list-style: none; margin: 4px 0 4px 16px; padding: 0 0 0 12px;
+             border-left: 1px dashed var(--line); }
+.tree li   { padding: 3px 0; }
+.node {
+  display: grid; grid-template-columns: 16px 1fr auto auto auto; gap: 10px;
+  align-items: center; padding: 3px 8px; border-radius: 5px;
+}
+.node:hover { background: var(--surface-2); }
+.node .tog {
+  cursor: pointer; color: var(--muted-2); text-align: center;
+  font: 600 10px/16px var(--mono); user-select: none;
+}
+.node .pn   { font: 500 12.5px/1.2 var(--mono); color: var(--ink); }
+.node .nm   { color: var(--ink-2); font-size: 12.5px; }
+.node .qty  { font: 500 11px/1 var(--mono); color: var(--muted); }
+.node .pct  { font: 500 11px/1 var(--mono); color: var(--muted); text-align: right; min-width: 44px; }
+.node .obsolete .pn { color: var(--danger); text-decoration: line-through; }
+li.hidden > ul { display: none; }
+
+/* Panels toggle ------------------------------------------------------ */
+.panel { display: none; }
+.panel.on { display: block; }
+
+/* Meter bar for weight% ---------------------------------------------- */
+.meter {
+  height: 6px; width: 68px; background: var(--line-2); border-radius: 999px;
+  overflow: hidden; display: inline-block; vertical-align: middle;
+}
+.meter > i { display: block; height: 100%; background: var(--accent); }
+
+/* Theme toggle ------------------------------------------------------- */
+.theme-toggle {
+  position: fixed; right: 16px; bottom: 16px; z-index: 20;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 999px; padding: 6px 12px; font: 500 12px/1 var(--sans);
+  color: var(--ink-2); cursor: pointer; box-shadow: var(--shadow-md);
+}
+
+/* Demo banner -------------------------------------------------------- */
+.demo-banner {
+  background: var(--accent-bg); color: var(--accent-ink);
+  border: 1px solid color-mix(in oklab, var(--accent) 30%, transparent);
+  border-radius: 8px; padding: 10px 14px; font-size: 12.5px;
+  margin-bottom: 16px; display: flex; gap: 10px; align-items: center;
+}
+.demo-banner b { color: var(--accent-ink); font-weight: 600; }
+
+@media (max-width: 780px) {
+  .shell { grid-template-columns: 1fr; }
+  aside.nav { flex-direction: row; overflow-x: auto; padding: 8px; gap: 4px; }
+  .brand, .nav-section, .nav-user { display: none; }
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  main { padding: 16px; }
+}
+</style>
+
+<div class="shell">
+  <aside class="nav">
+    <div class="brand">
+      <div class="brand-mark">GP</div>
+      <div>GPBOM<br><small>v0.1 · PREVIEW</small></div>
+    </div>
+    <div class="nav-section">Workspace</div>
+    <div class="nav-item active" data-tab="dashboard">
+      <span>總覽</span>
+    </div>
+    <div class="nav-item" data-tab="parts">
+      <span>料號</span><span class="pill pill-muted mono badge">1,247</span>
+    </div>
+    <div class="nav-item" data-tab="bom">
+      <span>BOM 展開</span>
+    </div>
+    <div class="nav-item" data-tab="substance">
+      <span>物質搜尋</span>
+    </div>
+    <div class="nav-section">Compliance</div>
+    <div class="nav-item" data-tab="docs">
+      <span>過期文件</span><span class="pill pill-danger badge">14</span>
+    </div>
+    <div class="nav-item" data-tab="pcn">
+      <span>PCN 變更</span>
+    </div>
+    <div class="nav-item" data-tab="claims">
+      <span>待辦認領</span><span class="pill pill-warn badge">6</span>
+    </div>
+
+    <div class="nav-user">
+      <div class="avatar">D</div>
+      <div>Doria<br><span style="color:var(--muted-2)">admin</span></div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="demo-banner">
+      <span class="pill pill-accent"><span class="dot"></span>DEMO</span>
+      <span>這是<b>離線預覽版</b>,資料為示範用途;實際上線版有真實 PostgreSQL 資料庫、登入、多人協作與稽核紀錄。</span>
+    </div>
+
+    <!-- ============ DASHBOARD ============ -->
+    <section class="panel on" data-panel="dashboard">
+      <div class="page-head">
+        <span class="crumb">HOME</span>
+        <h1>合規狀態總覽</h1>
+      </div>
+      <p class="subtitle">今天是 2026-09-03 · 上次同步 2 分鐘前</p>
+
+      <div class="kpis">
+        <div class="kpi"><div class="lab">使用中料號</div><div class="num">1,124</div><div class="delta">+3 本週</div></div>
+        <div class="kpi danger"><div class="lab">已過期文件</div><div class="num">14</div><div class="delta">SDS 4 · 測報 10</div></div>
+        <div class="kpi warn"><div class="lab">30 天內到期</div><div class="num">37</div><div class="delta">需重驗</div></div>
+        <div class="kpi ok"><div class="lab">本月新增 PCN</div><div class="num">8</div><div class="delta">全部已審核</div></div>
+      </div>
+
+      <div class="card" style="margin-bottom: 20px;">
+        <div class="card-head">
+          <h2>近期 PCN 變更</h2>
+          <div class="actions"><button class="btn ghost">查看全部 →</button></div>
+        </div>
+        <div class="tbl-scroll"><table>
+          <thead><tr><th>PCN No.</th><th>類型</th><th>影響料號</th><th>供應商</th><th>通知日</th><th>實施日</th><th>狀態</th></tr></thead>
+          <tbody>
+            <tr class="row-ok"><td class="mono">PCN00000128</td><td>製程變更</td><td class="mono">MCU-STM32F103C8T6</td><td>ST Micro</td><td class="mono">2026-08-14</td><td class="mono">2026-10-01</td><td><span class="pill pill-ok">已審核</span></td></tr>
+            <tr class="row-ok"><td class="mono">PCN00000127</td><td>換料</td><td class="mono">CAP-C0603-100nF · +2</td><td>Murata</td><td class="mono">2026-08-11</td><td class="mono">2026-09-15</td><td><span class="pill pill-ok">已審核</span></td></tr>
+            <tr class="row-duesoon"><td class="mono">PCN00000126</td><td>停產 EOL</td><td class="mono">LED-3528-R</td><td>Everlight</td><td class="mono">2026-08-05</td><td class="mono">2026-12-31</td><td><span class="pill pill-warn">實施中</span></td></tr>
+            <tr class="row-ok"><td class="mono">PCN00000125</td><td>換供應商</td><td class="mono">RES-0805-10K</td><td>Yageo → Walsin</td><td class="mono">2026-07-29</td><td class="mono">2026-09-01</td><td><span class="pill pill-ok">已審核</span></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>合規風險熱區</h2></div>
+        <div style="padding: 14px 16px; display: grid; grid-template-columns: repeat(3,1fr); gap: 14px;">
+          <div>
+            <div class="lab" style="font: 600 10px/1 var(--sans); color: var(--muted); letter-spacing: .12em; text-transform: uppercase;">RoHS 鉛 (Pb, 7439-92-1)</div>
+            <div style="font: 600 22px/1.1 var(--disp); margin-top: 6px;">3 <span style="font-size:13px; color: var(--muted); font-weight:500;">/ 42 件 &gt; 900ppm</span></div>
+            <div class="meter" style="width:100%; margin-top: 8px;"><i style="width: 7%; background: var(--warn);"></i></div>
+          </div>
+          <div>
+            <div class="lab" style="font: 600 10px/1 var(--sans); color: var(--muted); letter-spacing: .12em; text-transform: uppercase;">REACH SVHC (241 項)</div>
+            <div style="font: 600 22px/1.1 var(--disp); margin-top: 6px;">1 <span style="font-size:13px; color: var(--muted); font-weight:500;">/ 需申報</span></div>
+            <div class="meter" style="width:100%; margin-top: 8px;"><i style="width: 3%; background: var(--danger);"></i></div>
+          </div>
+          <div>
+            <div class="lab" style="font: 600 10px/1 var(--sans); color: var(--muted); letter-spacing: .12em; text-transform: uppercase;">衝突礦產 (Au·Ta·Sn·W)</div>
+            <div style="font: 600 22px/1.1 var(--disp); margin-top: 6px;">28 <span style="font-size:13px; color: var(--muted); font-weight:500;">/ 已檢附 CMRT</span></div>
+            <div class="meter" style="width:100%; margin-top: 8px;"><i style="width: 100%; background: var(--ok);"></i></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PARTS ============ -->
+    <section class="panel" data-panel="parts">
+      <div class="page-head"><span class="crumb">MASTER</span><h1>料號主檔</h1></div>
+      <p class="subtitle">總計 1,247 筆 · 使用中 1,124 · 已失效 108 · 待審 15</p>
+      <div class="card">
+        <div class="toolbar">
+          <input placeholder="搜尋料號 / 名稱 / MPN..." style="flex: 1; min-width: 240px;">
+          <select><option>全部狀態</option><option>使用中</option><option>已失效</option></select>
+          <select><option>全部供應商</option><option>Murata</option><option>ST Micro</option><option>Yageo</option></select>
+          <button class="btn primary">＋ 新增料號</button>
+          <button class="btn">Excel 匯入</button>
+        </div>
+        <div class="tbl-scroll"><table>
+          <thead><tr>
+            <th>料號</th><th>名稱</th><th>MPN / 原廠</th><th>供應商</th>
+            <th class="num">庫存</th><th>最後採購</th><th>狀態</th><th>認領</th>
+          </tr></thead>
+          <tbody id="partRows"></tbody>
+        </table></div>
+      </div>
+    </section>
+
+    <!-- ============ BOM ============ -->
+    <section class="panel" data-panel="bom">
+      <div class="page-head"><span class="crumb">STRUCTURE</span><h1>BOM 展開 · ASSY-CTRL-01</h1></div>
+      <p class="subtitle">控制器組件 Rev.C · 有效期間 2026-06-01 → 現在 · 6 層 · 47 節點</p>
+      <div class="card">
+        <div class="toolbar">
+          <input value="ASSY-CTRL-01" style="width: 200px;">
+          <button class="btn primary">展開 BOM</button>
+          <button class="btn">全部展開</button>
+          <button class="btn">全部收合</button>
+          <button class="btn ghost">匯出 Excel</button>
+        </div>
+        <div class="bom">
+          <div class="bom-hint">點三角形展開/收合子件 · 顯示 <span class="mono">×qty · 重量 (占父件%)</span></div>
+          <ul class="tree" id="bomTree"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SUBSTANCE ============ -->
+    <section class="panel" data-panel="substance">
+      <div class="page-head"><span class="crumb">SEARCH</span><h1>物質全產品搜尋</h1></div>
+      <p class="subtitle">依 CAS No. 或英文物質名跨全部料號查詢含量</p>
+      <div class="card">
+        <div class="toolbar">
+          <input value="1333-86-4" placeholder="CAS No." style="width: 180px;">
+          <input value="Carbon Black" placeholder="或物質名稱" style="width: 220px;">
+          <button class="btn primary">搜尋</button>
+          <span style="margin-left:auto; font-size:12px; color:var(--muted);">找到 <b style="color:var(--ink)">7</b> 筆</span>
+        </div>
+        <div class="tbl-scroll"><table>
+          <thead><tr>
+            <th>物質</th><th>CAS</th><th>料號</th><th>零件名稱</th><th>均質材料</th>
+            <th class="num">重量 (g)</th><th class="num">ppm</th><th>法規</th>
+          </tr></thead>
+          <tbody id="subRows"></tbody>
+        </table></div>
+      </div>
+    </section>
+
+    <!-- ============ DOCS ============ -->
+    <section class="panel" data-panel="docs">
+      <div class="page-head"><span class="crumb">COMPLIANCE</span><h1>過期文件 / 到期預警</h1></div>
+      <p class="subtitle">測報 &gt; 1 年 · SDS &gt; 3 年 · 30 天內到期黃色 · 已過期紅色</p>
+      <div class="card">
+        <div class="tbl-scroll"><table>
+          <thead><tr>
+            <th>類型</th><th>編號</th><th>對象料號</th><th>供應商</th>
+            <th>發行日</th><th>到期日</th><th>剩餘</th><th>認領處理</th>
+          </tr></thead>
+          <tbody id="docRows"></tbody>
+        </table></div>
+      </div>
+    </section>
+
+    <!-- ============ PCN ============ -->
+    <section class="panel" data-panel="pcn">
+      <div class="page-head"><span class="crumb">CHANGE</span><h1>PCN 變更紀錄</h1></div>
+      <p class="subtitle">系統流水碼 PCNxxxxxxxx · 供應商 PCN 對照 · 影響範圍分析</p>
+      <div class="card">
+        <div class="toolbar">
+          <button class="btn primary">＋ 新增 PCN</button>
+          <select><option>全部類型</option><option>換料</option><option>換供應商</option><option>製程變更</option><option>停產</option></select>
+        </div>
+        <div class="tbl-scroll"><table>
+          <thead><tr><th>系統 PCN</th><th>供應商 PCN</th><th>類型</th><th>影響</th><th>變更前 → 變更後</th><th>實施日</th><th>狀態</th></tr></thead>
+          <tbody>
+            <tr class="row-ok"><td class="mono">PCN00000128</td><td class="mono">ST-PCN-2026-0812</td><td>製程變更</td><td class="mono">3 料號</td><td class="mono">—</td><td class="mono">2026-10-01</td><td><span class="pill pill-ok">已審核</span></td></tr>
+            <tr class="row-ok"><td class="mono">PCN00000127</td><td class="mono">MUR-CN-8172</td><td>換料</td><td class="mono">CAP-C0603-100nF</td><td class="mono">GRM188R71H104K → GCM188R71H104K</td><td class="mono">2026-09-15</td><td><span class="pill pill-ok">已審核</span></td></tr>
+            <tr class="row-duesoon"><td class="mono">PCN00000126</td><td class="mono">EL-2026-0723</td><td>停產</td><td class="mono">LED-3528-R</td><td>—</td><td class="mono">2026-12-31</td><td><span class="pill pill-warn">實施中</span></td></tr>
+            <tr class="row-ok"><td class="mono">PCN00000125</td><td class="mono">YGO-PCN-1104</td><td>換供應商</td><td class="mono">RES-0805-10K</td><td>Yageo → Walsin</td><td class="mono">2026-09-01</td><td><span class="pill pill-ok">已審核</span></td></tr>
+            <tr class="row-ok"><td class="mono">PCN00000124</td><td class="mono">TDK-2026-0619</td><td>換原料</td><td class="mono">IND-1210-10uH</td><td>Ferrite → Metal Composite</td><td class="mono">2026-08-01</td><td><span class="pill pill-ok">已審核</span></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </section>
+
+    <!-- ============ CLAIMS ============ -->
+    <section class="panel" data-panel="claims">
+      <div class="page-head"><span class="crumb">TASKS</span><h1>待辦認領</h1></div>
+      <p class="subtitle">Sanyin / Ann / Doria · 建立文件成功後自動釋出</p>
+      <div class="card">
+        <div class="tbl-scroll"><table>
+          <thead><tr><th>料號</th><th>名稱</th><th>待辦原因</th><th>認領人</th><th>認領時間</th><th>已停留</th><th></th></tr></thead>
+          <tbody>
+            <tr><td class="mono">CAP-C0603-100nF</td><td>Chip Cap 100nF X7R</td><td>SDS 過期,需向 Murata 索取新版</td><td><span class="pill pill-accent"><span class="dot"></span>Ann</span></td><td class="mono">2026-08-29 09:14</td><td class="mono">5d 6h</td><td><button class="btn ghost">釋出</button></td></tr>
+            <tr><td class="mono">MCU-STM32F103C8T6</td><td>ARM Cortex-M3 MCU</td><td>PCN 影響評估</td><td><span class="pill pill-accent"><span class="dot"></span>Doria</span></td><td class="mono">2026-08-30 15:41</td><td class="mono">3d 23h</td><td><button class="btn ghost">釋出</button></td></tr>
+            <tr><td class="mono">HSG-PC-BLK-01</td><td>ABS 外殼</td><td>測報過期 &gt; 1 年</td><td><span class="pill pill-accent"><span class="dot"></span>Sanyin</span></td><td class="mono">2026-09-01 10:22</td><td class="mono">2d 4h</td><td><button class="btn ghost">釋出</button></td></tr>
+            <tr><td class="mono">LED-3528-R</td><td>紅光 LED 3528</td><td>EOL 替代料尋找</td><td><span class="pill pill-accent"><span class="dot"></span>Doria</span></td><td class="mono">2026-09-02 08:00</td><td class="mono">1d 6h</td><td><button class="btn ghost">釋出</button></td></tr>
+            <tr><td class="mono">SOL-SAC305-1.0</td><td>無鉛焊錫 SAC305</td><td>REACH SVHC 年度複查</td><td><span class="pill pill-accent"><span class="dot"></span>Ann</span></td><td class="mono">2026-09-02 16:30</td><td class="mono">22h</td><td><button class="btn ghost">釋出</button></td></tr>
+            <tr><td class="mono">RES-0805-10K</td><td>Chip Res 10kΩ</td><td>換供應商 (Walsin) FAI 驗證</td><td><span class="pill pill-accent"><span class="dot"></span>Sanyin</span></td><td class="mono">2026-09-03 09:05</td><td class="mono">6h</td><td><button class="btn ghost">釋出</button></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<button class="theme-toggle" id="themeBtn">🌓 切換主題</button>
+
+<script>
+// ---- Mock data ----------------------------------------------------
+const PARTS = [
+  ["ASSY-CTRL-01","控制器組件 Rev.C","STM32-based","In-house",     42,"2026-08-20","active",  "Doria"],
+  ["MCU-STM32F103C8T6","ARM Cortex-M3 MCU","STM32F103C8T6 · ST","WPI Group", 1250,"2026-08-14","active", null],
+  ["CAP-C0603-100nF","Chip Cap 100nF X7R","GRM188R71H104K · Murata","Uniohm", 84300,"2026-08-02","active","Ann"],
+  ["RES-0805-10K","Chip Res 10kΩ 1%","AC0805FR-0710KL · Yageo","Yageo",     51200,"2026-07-29","active", null],
+  ["LED-3528-R","LED 3528 Red","19-217/R6C-AL1M2VY/3T · Everlight","Everlight", 3400,"2026-07-15","pending","Doria"],
+  ["SOL-SAC305-1.0","Solder Wire SAC305 1.0mm","SN100C · Nihon Superior","Nihon", 22,"2026-06-30","active","Ann"],
+  ["HSG-PC-BLK-01","外殼 ABS 黑色","—","Uni-Case",     640,"2026-06-11","active","Sanyin"],
+  ["CAP-OLD-100nF-A","Chip Cap 100nF (舊)","GRM155 · Murata","Uniohm",      0,"2024-03-11","obsolete", null],
+];
+
+const BOM = [
+  { pn:"ASSY-CTRL-01", nm:"控制器組件 Rev.C", qty:1, wg:485.0, pct:100, status:"active", children:[
+    { pn:"PCB-CTRL-4L-01", nm:"PCB 4L FR-4 HASL", qty:1, wg:112.0, pct:23.1, status:"active", children:[
+      { pn:"CU-FOIL-35UM", nm:"銅箔 35μm", qty:1, wg:28.4, pct:25.4, status:"active" },
+      { pn:"FR4-CORE-1.6", nm:"FR-4 玻纖基材", qty:1, wg:78.2, pct:69.8, status:"active" },
+    ]},
+    { pn:"MCU-STM32F103C8T6", nm:"ARM Cortex-M3 MCU (LQFP-48)", qty:1, wg:0.32, pct:0.07, status:"active", children:[
+      { pn:"MAT-EMC-BLK", nm:"環氧封裝樹脂 (含 Carbon Black)", qty:1, wg:0.24, pct:75.0, status:"active" },
+      { pn:"MAT-CU-LF",   nm:"銅腳架 (Cu ≥99.9%)", qty:1, wg:0.06, pct:18.8, status:"active" },
+      { pn:"SOL-BALL",    nm:"焊錫接點 SnAg", qty:48, wg:0.02, pct:6.3, status:"active" },
+    ]},
+    { pn:"CAP-C0603-100nF", nm:"Chip Cap 100nF X7R", qty:24, wg:0.024, pct:0.005, status:"active" },
+    { pn:"RES-0805-10K",    nm:"Chip Res 10kΩ 1%", qty:18, wg:0.018, pct:0.004, status:"active" },
+    { pn:"LED-3528-R",      nm:"LED 3528 Red (EOL 進行中)", qty:2, wg:0.05, pct:0.010, status:"pending" },
+    { pn:"HSG-PC-BLK-01",   nm:"外殼 ABS 黑色 (含 Carbon Black)", qty:1, wg:340, pct:70.1, status:"active", children:[
+      { pn:"MAT-ABS-BLK", nm:"ABS 樹脂 · 黑色", qty:1, wg:326, pct:95.9, status:"active" },
+      { pn:"MAT-CB",      nm:"Carbon Black (色料)", qty:1, wg:8.5, pct:2.5, status:"active" },
+      { pn:"MAT-STAB",    nm:"熱穩定劑", qty:1, wg:5.5, pct:1.6, status:"active" },
+    ]},
+    { pn:"CAP-OLD-100nF-A", nm:"Chip Cap 100nF (已失效替代)", qty:0, wg:0, pct:0, status:"obsolete" },
+  ]}
+];
+
+const SUBS = [
+  ["Carbon Black","1333-86-4","HSG-PC-BLK-01","外殼 ABS 黑色","ABS resin blend", 8.500, 25000, "REACH · 未列管"],
+  ["Carbon Black","1333-86-4","MCU-STM32F103C8T6","MCU 封裝 LQFP-48","Epoxy Mold Compound", 0.024, 1000, "REACH · 未列管"],
+  ["Carbon Black","1333-86-4","CAP-C0603-100nF","Chip Cap 電極","Ni-electrode paste", 0.0002, 800, "REACH · 未列管"],
+  ["Carbon Black","1333-86-4","GSK-EPDM-BLK","EPDM 密封條","EPDM rubber", 1.240, 28000, "REACH · 未列管"],
+  ["Carbon Black","1333-86-4","CBL-USB-BLK","USB Cable 外皮","PVC jacket", 3.100, 22500, "REACH · 未列管"],
+  ["Carbon Black","1333-86-4","LBL-STICK-BLK","黑色標籤貼紙","Ink layer", 0.0080, 6000, "REACH · 未列管"],
+  ["Carbon Black","1333-86-4","FILM-PET-BLK","PET 保護膜","PET film", 0.4200, 3500, "REACH · 未列管"],
+];
+
+const DOCS = [
+  ["SDS", "MUR-SDS-C0603-2022","CAP-C0603-100nF","Murata",     "2022-03-01","2025-03-01", -186, "expired","Ann"],
+  ["SDS", "MUR-SDS-GRM155-2021","CAP-OLD-100nF-A","Murata",   "2021-06-14","2024-06-14", -447, "expired",null],
+  ["測報","SGS-RoHS-24000123","MCU-STM32F103C8T6","SGS",       "2024-05-20","2025-05-20", -106, "expired","Doria"],
+  ["測報","BV-REACH-24-0092","HSG-PC-BLK-01","Bureau Veritas", "2024-11-02","2025-11-02",   60, "duesoon","Sanyin"],
+  ["聲明","YGO-DECL-2025-R08","RES-0805-10K","Yageo",           "2025-08-01","2026-08-01",  -33, "expired",null],
+  ["CMRT","EL-CMRT-2025","LED-3528-R","Everlight",              "2025-09-10","2026-09-10",    7, "duesoon","Doria"],
+  ["測報","INT-RoHS-25-0451","RES-0805-10K","Intertek",         "2025-11-15","2026-11-15",   73, "duesoon",null],
+  ["測報","SGS-PFAS-25-0088","SOL-SAC305-1.0","SGS",            "2025-12-01","2026-12-01",   89, "duesoon","Ann"],
+];
+
+// ---- Renderers ----------------------------------------------------
+const owners = { "Doria":"D","Ann":"A","Sanyin":"S" };
+const statusPill = (s) => {
+  const map = { active:["pill-ok","使用中"], obsolete:["pill-danger","已失效"], pending:["pill-warn","待審"] };
+  const [c,t] = map[s]||["pill-muted",s];
+  return `<span class="pill ${c}">${t}</span>`;
+};
+const ownerPill = (o) => o
+  ? `<span class="pill pill-accent"><span class="dot"></span>${o}</span>`
+  : `<button class="btn ghost" style="padding:2px 8px; font-size:11px;">認領</button>`;
+
+document.getElementById("partRows").innerHTML = PARTS.map(r => `
+  <tr>
+    <td class="mono">${r[0]}</td>
+    <td>${r[1]}</td>
+    <td class="mono" style="color:var(--muted)">${r[2]}</td>
+    <td>${r[3]}</td>
+    <td class="num mono">${r[4].toLocaleString()}</td>
+    <td class="mono" style="color:var(--muted)">${r[5]}</td>
+    <td>${statusPill(r[6])}</td>
+    <td>${ownerPill(r[7])}</td>
+  </tr>`).join("");
+
+function renderNode(n, open=false){
+  const kids = (n.children||[]).length
+    ? `<ul>${n.children.map(c => renderNode(c, false)).join("")}</ul>` : "";
+  const kls = (n.status === "obsolete") ? "obsolete" : "";
+  const pctBar = n.pct != null
+    ? `<span class="meter" title="${n.pct}%"><i style="width:${Math.min(100,n.pct)}%"></i></span>` : "";
+  const tog = kids ? (open ? "▾" : "▸") : "·";
+  return `<li class="${open ? "" : "hidden"}">
+    <div class="node ${kls}">
+      <span class="tog" onclick="toggle(this)">${tog}</span>
+      <span><span class="pn">${n.pn}</span> <span class="nm">— ${n.nm}</span> ${n.status!=='active'?statusPill(n.status):""}</span>
+      <span class="qty">×${n.qty}</span>
+      <span class="qty">${n.wg?n.wg.toFixed(3)+'g':''}</span>
+      <span class="pct">${n.pct?n.pct.toFixed(1)+'%':''} ${pctBar}</span>
+    </div>
+    ${kids}
+  </li>`;
+}
+document.getElementById("bomTree").innerHTML = BOM.map(n => renderNode(n, true)).join("");
+window.toggle = (el) => {
+  const li = el.closest("li");
+  li.classList.toggle("hidden");
+  el.textContent = li.classList.contains("hidden") ? "▸" : "▾";
+};
+
+document.getElementById("subRows").innerHTML = SUBS.map(r => `
+  <tr>
+    <td>${r[0]}</td>
+    <td class="mono" style="color:var(--muted)">${r[1]}</td>
+    <td class="mono">${r[2]}</td>
+    <td>${r[3]}</td>
+    <td>${r[4]}</td>
+    <td class="num mono">${r[5].toFixed(4)}</td>
+    <td class="num mono">${r[6].toLocaleString()}</td>
+    <td><span class="pill pill-muted">${r[7]}</span></td>
+  </tr>`).join("");
+
+document.getElementById("docRows").innerHTML = DOCS.map(r => {
+  const cls = r[7] === "expired" ? "row-expired" : (r[7] === "duesoon" ? "row-duesoon" : "row-ok");
+  const pill = r[7] === "expired"
+    ? `<span class="pill pill-danger">已過期 ${Math.abs(r[6])}d</span>`
+    : `<span class="pill pill-warn">剩 ${r[6]}d</span>`;
+  return `<tr class="${cls}">
+    <td><span class="pill pill-muted">${r[0]}</span></td>
+    <td class="mono">${r[1]}</td>
+    <td class="mono">${r[2]}</td>
+    <td>${r[3]}</td>
+    <td class="mono" style="color:var(--muted)">${r[4]}</td>
+    <td class="mono">${r[5]}</td>
+    <td>${pill}</td>
+    <td>${ownerPill(r[8])}</td>
+  </tr>`;
+}).join("");
+
+// ---- Tab nav ------------------------------------------------------
+document.querySelectorAll(".nav-item[data-tab]").forEach(el => {
+  el.addEventListener("click", () => {
+    document.querySelectorAll(".nav-item").forEach(x => x.classList.remove("active"));
+    el.classList.add("active");
+    const t = el.dataset.tab;
+    document.querySelectorAll(".panel").forEach(p =>
+      p.classList.toggle("on", p.dataset.panel === t));
+  });
+});
+
+// ---- Theme toggle -------------------------------------------------
+const btn = document.getElementById("themeBtn");
+btn.addEventListener("click", () => {
+  const cur = document.documentElement.getAttribute("data-theme");
+  const next = cur === "dark" ? "light" : (cur === "light" ? "dark" : "dark");
+  document.documentElement.setAttribute("data-theme", next);
+});
+</script>
