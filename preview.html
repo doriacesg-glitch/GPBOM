@@ -1,7 +1,7 @@
 <title>GPBOM 綠色產品管理系統</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700&family=Chakra+Petch:wght@400;500;600;700&family=Share+Tech+Mono&family=Noto+Sans+TC:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700&family=Rajdhani:wght@500;600;700&family=Carlito:wght@400;700&family=Chakra+Petch:wght@500;600&family=Share+Tech+Mono&family=Noto+Sans+TC:wght@400;500;600;700&display=swap">
 
 <style>
 /* =========================================================
@@ -41,8 +41,9 @@
   --danger:    #FF4B6A;
   --danger-bg: rgba(255, 75, 106, 0.10);
 
-  --disp: "Orbitron", "Chakra Petch", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
-  --sans: "Noto Sans TC", "Chakra Petch", "PingFang TC", "Microsoft JhengHei", ui-sans-serif, system-ui, sans-serif;
+  --disp: "Orbitron", "Rajdhani", "Chakra Petch", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --sans: "Calibri", "Carlito", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", ui-sans-serif, system-ui, sans-serif;
+  --num:  "Rajdhani", "Chakra Petch", "Calibri", "Carlito", sans-serif; /* bold HUD numerals */
   --mono: "Share Tech Mono", "JetBrains Mono", ui-monospace, Menlo, monospace;
 
   --gap: 20px;
@@ -264,8 +265,9 @@ main { padding: 22px 30px 60px; min-width: 0; }
   letter-spacing: .28em; color: var(--muted); text-transform: uppercase;
 }
 .kpi .num-lg {
-  font: 400 40px/1 var(--mono);
-  margin-top: 14px; letter-spacing: .02em;
+  font: 700 44px/1 var(--num);
+  margin-top: 14px; letter-spacing: .01em;
+  font-variant-numeric: tabular-nums;
   color: var(--accent);
   text-shadow: 0 0 20px rgba(0,255,255,.35);
 }
@@ -453,7 +455,7 @@ li.hidden > ul { display: none; }
 /* Risk row ------------------------------------------------- */
 .risk-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding: 18px 20px; }
 .risk .lab { font: 500 10px/1 var(--sans); letter-spacing: .22em; color: var(--muted); text-transform: uppercase; }
-.risk .val { font: 400 26px/1.05 var(--mono); margin-top: 12px; letter-spacing: .04em; color: var(--ink); }
+.risk .val { font: 700 30px/1.05 var(--num); margin-top: 12px; letter-spacing: .01em; font-variant-numeric: tabular-nums; color: var(--ink); }
 .risk .val small { font: 500 12px/1 var(--mono); color: var(--muted); margin-left: 8px; letter-spacing: .14em; text-transform: uppercase; }
 .risk .bar {
   height: 6px; border: 1px solid var(--line-2); margin-top: 12px; position: relative; overflow: hidden;
@@ -475,7 +477,7 @@ li.hidden > ul { display: none; }
 }
 .hud-tile { display: grid; grid-template-columns: 1fr 160px; align-items: center; padding: 20px; gap: 20px; }
 .hud-tile .info h3 { font: 600 12px/1 var(--disp); letter-spacing: .22em; text-transform: uppercase; color: var(--accent); }
-.hud-tile .info .big { font: 400 40px/1 var(--mono); color: var(--ink); margin-top: 12px; text-shadow: 0 0 18px rgba(0,255,255,.25); }
+.hud-tile .info .big { font: 700 46px/1 var(--num); color: var(--ink); margin-top: 12px; letter-spacing: .01em; font-variant-numeric: tabular-nums; text-shadow: 0 0 18px rgba(0,255,255,.25); }
 .hud-tile .info .desc { font-size: 12px; color: var(--muted); margin-top: 8px; letter-spacing: .04em; }
 
 /* Panels toggle -------------------------------------------- */
@@ -731,6 +733,166 @@ li.hidden > ul { display: none; }
     background: linear-gradient(90deg, transparent, var(--accent), transparent);
     animation: bar-flow 2.6s ease-in-out infinite;
   }
+}
+
+/* ============ Part detail page ============ */
+.detail-head {
+  display: grid; grid-template-columns: 1fr auto; gap: 18px;
+  align-items: center; padding: 18px 22px;
+}
+.detail-head-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px 28px;
+}
+.dh-cell { min-width: 0; }
+.dh-lab { font: 500 10px/1 var(--sans); color: var(--muted); letter-spacing: .22em; text-transform: uppercase; margin-bottom: 6px; }
+.dh-val { font: 500 15px/1.4 var(--sans); color: var(--ink); }
+.dh-val.mono { font-family: var(--mono); letter-spacing: .04em; }
+.detail-head-actions {
+  display: flex; flex-direction: column; gap: 8px; align-items: stretch; min-width: 160px;
+}
+
+/* Sub-tabs */
+.subtabs {
+  display: flex; gap: 4px; margin: 16px 0 18px;
+  border-bottom: 1px solid var(--line-2); padding-bottom: 0;
+  overflow-x: auto;
+}
+.subtab {
+  background: transparent; border: 0; padding: 12px 18px; cursor: pointer;
+  font: 500 13px/1 var(--sans); color: var(--muted); letter-spacing: .12em;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px; white-space: nowrap;
+}
+.subtab:hover { color: var(--ink); }
+.subtab.active { color: var(--accent); border-bottom-color: var(--accent);
+                 text-shadow: 0 0 12px rgba(0,255,255,.35); }
+.subpanel { display: none; }
+.subpanel.on { display: block; }
+
+/* Key-Value list */
+.kv-list { padding: 6px 4px 12px; }
+.kv {
+  display: grid; grid-template-columns: 140px 1fr; gap: 16px;
+  padding: 10px 16px; align-items: center;
+  border-bottom: 1px solid var(--line-3);
+}
+.kv:last-child { border-bottom: 0; }
+.kv .k { font: 500 12px/1 var(--sans); color: var(--muted); letter-spacing: .12em; text-transform: uppercase; }
+.kv .v { font: 500 14px/1.5 var(--sans); color: var(--ink); }
+.kv .v.mono { font-family: var(--mono); letter-spacing: .04em; }
+
+/* Doc list */
+.doc-list { padding: 8px 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.doc-row {
+  display: grid; grid-template-columns: 110px 1fr auto; gap: 12px;
+  padding: 10px 14px; align-items: center;
+  border: 1px solid var(--line-2);
+  background: var(--glass-hi);
+}
+.doc-row.row-expired { border-color: rgba(255, 75, 106, 0.35); box-shadow: inset 3px 0 0 var(--danger); }
+.doc-row.row-duesoon { border-color: rgba(255, 210, 76, 0.35); box-shadow: inset 3px 0 0 var(--warn); }
+.doc-row.row-ok      { border-color: rgba(0, 255, 163, 0.30); box-shadow: inset 3px 0 0 var(--ok); }
+.doc-row .d-info { min-width: 0; }
+.doc-row .d-info .mono { font-family: var(--mono); font-size: 13px; color: var(--ink); }
+.doc-row .d-info .d-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+/* Two-column grid */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); margin-bottom: var(--gap); }
+@media (max-width: 1024px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .detail-head { grid-template-columns: 1fr; }
+  .detail-head-actions { flex-direction: row; overflow-x: auto; }
+  .detail-head-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* KPI unit tail */
+.unit-tail { font-size: 22px; color: var(--muted); margin-left: 4px; }
+
+/* Material summary strip */
+.mat-summary {
+  display: grid; grid-template-columns: repeat(4, 1fr) auto; gap: 18px 24px;
+  padding: 18px 22px; margin-bottom: var(--gap);
+}
+.mat-sum-cell .lab { font: 500 10px/1 var(--sans); color: var(--muted); letter-spacing: .22em; text-transform: uppercase; }
+.mat-sum-cell .v-lg { font: 700 26px/1 var(--num); margin-top: 8px; letter-spacing: .01em; font-variant-numeric: tabular-nums; color: var(--ink); }
+.mat-sum-cell .v-lg.ok { color: var(--ok); text-shadow: 0 0 12px rgba(0, 255, 163, .30); }
+.mat-sum-cell .v-lg .unit { font: 500 12px/1 var(--sans); color: var(--muted); margin-left: 6px; letter-spacing: .06em; }
+.mat-sum-cell .v-sub { font: 500 11px/1.3 var(--sans); color: var(--muted); margin-top: 6px; }
+.mat-sum-cell .v-sub.ok { color: var(--ok); }
+.mat-sum-actions { display: grid; align-items: center; }
+
+@media (max-width: 1024px) {
+  .mat-summary { grid-template-columns: repeat(2, 1fr); }
+  .mat-sum-actions { grid-column: 1 / -1; }
+}
+
+/* Material → Substance tree */
+.mat-tree { padding: 4px 0 8px; }
+.mat-block {
+  border-top: 1px dashed var(--line-2);
+}
+.mat-block:first-child { border-top: 0; }
+.mat-head {
+  display: grid; grid-template-columns: 20px minmax(0, 1.6fr) minmax(0, 2fr) auto; gap: 14px;
+  align-items: center; padding: 12px 20px; cursor: pointer;
+  background: transparent;
+}
+.mat-head:hover { background: var(--glass-hi); }
+.mat-tog { color: var(--accent); font: 400 12px/1 var(--mono); user-select: none; text-align: center; }
+.mat-title { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
+.mat-title .mono { font-size: 13px; color: var(--ink); }
+.mat-title .mat-nm { font-size: 14px; color: var(--ink-2); font-weight: 600; }
+.mat-meta { display: flex; gap: 22px; }
+.meta-cell { display: flex; flex-direction: column; gap: 3px; min-width: 60px; }
+.meta-cell .lab { font: 500 10px/1 var(--sans); color: var(--muted); letter-spacing: .16em; text-transform: uppercase; }
+.meta-cell .v { font-size: 13px; color: var(--ink); }
+.mat-actions { display: flex; gap: 6px; }
+.mat-actions .btn { min-height: 32px; padding: 6px 10px; font-size: 11px; }
+
+.subs-list { display: none; padding: 4px 20px 12px 46px; }
+.mat-block.open > .subs-list { display: block; }
+.mat-block.open .mat-tog::before { content: "▾"; }
+.mat-block:not(.open) .mat-tog { transform: rotate(-90deg); display: inline-block; }
+
+.subs-row {
+  display: grid;
+  grid-template-columns:
+    minmax(180px, 1.4fr)    /* name */
+    minmax(100px, .8fr)     /* CAS */
+    minmax(80px, .6fr)      /* weight */
+    minmax(100px, .8fr)     /* ppm */
+    minmax(160px, 1.2fr)    /* source doc */
+    minmax(200px, 1.6fr);   /* regulations */
+  gap: 14px; align-items: center;
+  padding: 10px 12px;
+  border-left: 2px solid var(--line-2);
+  border-bottom: 1px dashed var(--line-3);
+}
+.subs-row:last-child { border-bottom: 0; }
+.subs-row:hover { background: var(--glass-hi); border-left-color: var(--accent-dim); }
+.subs-row .s-name { font-size: 13.5px; color: var(--ink-2); }
+.subs-row .s-name b { color: var(--ink); font-weight: 700; }
+.subs-row .s-cas { color: var(--muted); font-size: 12px; }
+.subs-row .s-wg, .subs-row .s-ppm {
+  font: 600 13px/1 var(--num); color: var(--ink); letter-spacing: .01em;
+  font-variant-numeric: tabular-nums; text-align: right;
+}
+.subs-row .s-ppm { color: var(--accent); }
+.doc-link {
+  color: var(--accent); text-decoration: none; font-size: 12px; cursor: pointer;
+  border-bottom: 1px dashed var(--accent-dim); padding-bottom: 1px;
+}
+.doc-link:hover { border-bottom-style: solid; }
+.subs-row .s-reg { display: flex; flex-wrap: wrap; gap: 4px; }
+.subs-row .s-reg .pill { font-size: 9px; padding: 3px 7px; }
+
+@media (max-width: 1200px) {
+  .subs-row { grid-template-columns: 1fr 1fr; row-gap: 6px; }
+  .subs-row .s-reg { grid-column: 1 / -1; }
+}
+@media (max-width: 1024px) {
+  .mat-head { grid-template-columns: 20px 1fr auto; }
+  .mat-meta { display: none; }
 }
 
 /* Vertical mark */
@@ -1093,7 +1255,467 @@ li.hidden > ul { display: none; }
         </table></div>
       </div>
     </section>
+
+    <!-- ============ DETAIL: 零件詳情 ============ -->
+    <section class="panel" data-panel="detail">
+      <span class="v-mark">DETAIL / PART</span>
+
+      <div class="page-head">
+        <span class="sec">DETAIL</span>
+        <h1 id="d_title">零件詳情</h1>
+        <span class="rev" id="d_rev">Rev.C · 使用中</span>
+      </div>
+
+      <!-- 識別 header 卡 -->
+      <div class="detail-head card">
+        <div class="detail-head-grid">
+          <div class="dh-cell">
+            <div class="dh-lab">料號</div>
+            <div class="dh-val mono" id="d_pn">CAP-C0603-100nF</div>
+          </div>
+          <div class="dh-cell">
+            <div class="dh-lab">名稱</div>
+            <div class="dh-val" id="d_name">Chip Cap 100nF X7R</div>
+          </div>
+          <div class="dh-cell">
+            <div class="dh-lab">原廠 / MPN</div>
+            <div class="dh-val" id="d_mpn">Murata · GRM188R71H104K</div>
+          </div>
+          <div class="dh-cell">
+            <div class="dh-lab">供應商</div>
+            <div class="dh-val" id="d_supp">Uniohm</div>
+          </div>
+          <div class="dh-cell">
+            <div class="dh-lab">狀態</div>
+            <div class="dh-val" id="d_status"><span class="pill pill-ok"><span class="dot"></span>使用中</span></div>
+          </div>
+          <div class="dh-cell">
+            <div class="dh-lab">認領</div>
+            <div class="dh-val" id="d_owner"><span class="owner"><span class="dot"></span>Ann</span></div>
+          </div>
+        </div>
+        <div class="detail-head-actions">
+          <button class="btn ghost" onclick="switchTab('parts')">← 返回料號列表</button>
+          <button class="btn">編輯資料</button>
+          <button class="btn">歷程紀錄</button>
+          <button class="btn primary">變更狀態</button>
+        </div>
+      </div>
+
+      <!-- 頁籤 -->
+      <div class="subtabs">
+        <button class="subtab active" data-subtab="d_overview">總覽</button>
+        <button class="subtab" data-subtab="d_material">材料組成</button>
+        <button class="subtab" data-subtab="d_where">BOM 用途</button>
+        <button class="subtab" data-subtab="d_docs">文件</button>
+        <button class="subtab" data-subtab="d_changes">變更歷程</button>
+      </div>
+
+      <!-- === 總覽 === -->
+      <div class="subpanel on" data-subpanel="d_overview">
+
+        <div class="kpis" style="grid-template-columns: repeat(4,1fr);">
+          <div class="kpi ok">
+            <div class="lab">合規狀態</div>
+            <div class="num-lg">PASS</div>
+            <div class="sub">RoHS · REACH SVHC · CMRT</div>
+          </div>
+          <div class="kpi warn">
+            <div class="lab">最近到期文件</div>
+            <div class="num-lg">−186<span class="unit-tail">d</span></div>
+            <div class="sub">SDS · 2025-03-01 已過期</div>
+          </div>
+          <div class="kpi">
+            <div class="lab">使用此料號的成品</div>
+            <div class="num-lg">03</div>
+            <div class="sub">ASSY-CTRL-01 · +2</div>
+          </div>
+          <div class="kpi attn">
+            <div class="lab">庫存</div>
+            <div class="num-lg">84,300</div>
+            <div class="sub">pcs · 最後採購 2026-08-02</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head"><h2>基本資料</h2><span class="id">/ INFO</span></div>
+            <div class="kv-list">
+              <div class="kv"><span class="k">類別</span><span class="v">零件 Component</span></div>
+              <div class="kv"><span class="k">單位</span><span class="v">pcs</span></div>
+              <div class="kv"><span class="k">供應商料號</span><span class="v mono">UNI-C0603-100n</span></div>
+              <div class="kv"><span class="k">單件重量</span><span class="v mono">0.016 g</span></div>
+              <div class="kv"><span class="k">當前 Revision</span><span class="v mono">Rev.C · 生效 2026-06-01</span></div>
+              <div class="kv"><span class="k">最後採購</span><span class="v mono">2026-08-02</span></div>
+              <div class="kv"><span class="k">建立者 / 時間</span><span class="v">Doria · 2024-11-08</span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h2>最新文件</h2><span class="id">/ DOCS.LATEST</span></div>
+            <div class="doc-list">
+              <div class="doc-row row-expired">
+                <span class="pill pill-danger"><span class="dot"></span>SDS 已過期</span>
+                <div class="d-info">
+                  <div class="mono">MUR-SDS-C0603-2022</div>
+                  <div class="d-sub">Murata · 2022-03-01 → 2025-03-01</div>
+                </div>
+                <button class="btn ghost">替換 →</button>
+              </div>
+              <div class="doc-row row-duesoon">
+                <span class="pill pill-warn"><span class="dot"></span>剩 73 d</span>
+                <div class="d-info">
+                  <div class="mono">INT-RoHS-25-0451</div>
+                  <div class="d-sub">Intertek · RoHS 測試報告 · 2025-11-15</div>
+                </div>
+                <button class="btn ghost">開啟</button>
+              </div>
+              <div class="doc-row row-ok">
+                <span class="pill pill-ok"><span class="dot"></span>有效</span>
+                <div class="d-info">
+                  <div class="mono">MUR-DECL-2026-Q3</div>
+                  <div class="d-sub">Murata · 保證書 · 2026-07-01</div>
+                </div>
+                <button class="btn ghost">開啟</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- === 材料組成 === -->
+      <div class="subpanel" data-subpanel="d_material">
+
+        <div class="mat-summary card">
+          <div class="mat-sum-cell">
+            <div class="lab">零件總重量(標稱)</div>
+            <div class="v-lg">0.016 <span class="unit">g</span></div>
+          </div>
+          <div class="mat-sum-cell">
+            <div class="lab">材料加總實測</div>
+            <div class="v-lg ok">0.016 <span class="unit">g</span></div>
+            <div class="v-sub ok">差異 0.0% · 通過校驗</div>
+          </div>
+          <div class="mat-sum-cell">
+            <div class="lab">物質總數 / 均質材料</div>
+            <div class="v-lg">04 <span class="unit">物質 · 02 材料</span></div>
+          </div>
+          <div class="mat-sum-cell">
+            <div class="lab">合規檢核</div>
+            <div class="v-lg ok">PASS</div>
+            <div class="v-sub">RoHS 6+4 · REACH SVHC · Prop 65</div>
+          </div>
+          <div class="mat-sum-actions">
+            <button class="btn primary" onclick="openModal('matModal')">+ 新增均質材料</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2>材料 → 物質層</h2>
+            <span class="id">/ MAT.TREE</span>
+            <div class="actions">
+              <button class="btn ghost">全部展開</button>
+              <button class="btn ghost">匯出 IPC-1752A</button>
+            </div>
+          </div>
+
+          <div class="mat-tree">
+            <!-- 材料 1 -->
+            <div class="mat-block open" data-mat="ceramic">
+              <div class="mat-head" onclick="this.parentElement.classList.toggle('open')">
+                <span class="mat-tog">▾</span>
+                <div class="mat-title">
+                  <span class="mono">MAT-CERAMIC</span>
+                  <span class="mat-nm">陶瓷介電體</span>
+                </div>
+                <div class="mat-meta">
+                  <span class="meta-cell"><span class="lab">重量</span><span class="v mono">0.012 g</span></span>
+                  <span class="meta-cell"><span class="lab">占零件</span><span class="v mono">75.0 %</span></span>
+                  <span class="meta-cell"><span class="lab">物質</span><span class="v mono">02</span></span>
+                </div>
+                <div class="mat-actions">
+                  <button class="btn ghost" onclick="event.stopPropagation(); openModal('subsModal')">+ 物質</button>
+                  <button class="btn ghost" onclick="event.stopPropagation()">編輯</button>
+                </div>
+              </div>
+              <div class="subs-list">
+                <div class="subs-row">
+                  <div class="s-name"><b>BaTiO₃</b> · 鈦酸鋇</div>
+                  <div class="s-cas mono">1313-99-1</div>
+                  <div class="s-wg num">0.010 g</div>
+                  <div class="s-ppm num">850,000 ppm</div>
+                  <div class="s-doc"><a class="doc-link mono">INT-RoHS-25-0451 ↗</a></div>
+                  <div class="s-reg">
+                    <span class="pill pill-ok">RoHS ✓</span>
+                    <span class="pill pill-muted">未列 SVHC</span>
+                  </div>
+                </div>
+                <div class="subs-row">
+                  <div class="s-name">SiO₂ · 二氧化矽</div>
+                  <div class="s-cas mono">7631-86-9</div>
+                  <div class="s-wg num">0.001 g</div>
+                  <div class="s-ppm num">92,000 ppm</div>
+                  <div class="s-doc"><a class="doc-link mono">INT-RoHS-25-0451 ↗</a></div>
+                  <div class="s-reg">
+                    <span class="pill pill-ok">RoHS ✓</span>
+                    <span class="pill pill-muted">未列 SVHC</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 材料 2 -->
+            <div class="mat-block open" data-mat="electrode">
+              <div class="mat-head" onclick="this.parentElement.classList.toggle('open')">
+                <span class="mat-tog">▾</span>
+                <div class="mat-title">
+                  <span class="mono">MAT-ELECTRODE</span>
+                  <span class="mat-nm">Ni 電極</span>
+                </div>
+                <div class="mat-meta">
+                  <span class="meta-cell"><span class="lab">重量</span><span class="v mono">0.003 g</span></span>
+                  <span class="meta-cell"><span class="lab">占零件</span><span class="v mono">18.8 %</span></span>
+                  <span class="meta-cell"><span class="lab">物質</span><span class="v mono">01</span></span>
+                </div>
+                <div class="mat-actions">
+                  <button class="btn ghost" onclick="event.stopPropagation(); openModal('subsModal')">+ 物質</button>
+                  <button class="btn ghost" onclick="event.stopPropagation()">編輯</button>
+                </div>
+              </div>
+              <div class="subs-list">
+                <div class="subs-row">
+                  <div class="s-name"><b>Ni</b> · 鎳</div>
+                  <div class="s-cas mono">7440-02-0</div>
+                  <div class="s-wg num">0.003 g</div>
+                  <div class="s-ppm num">1,000,000 ppm</div>
+                  <div class="s-doc"><a class="doc-link mono">INT-RoHS-25-0451 ↗</a></div>
+                  <div class="s-reg">
+                    <span class="pill pill-ok">RoHS ✓</span>
+                    <span class="pill pill-warn">SVHC 監控</span>
+                    <span class="pill pill-warn">Prop 65 列管</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 材料 3 -->
+            <div class="mat-block" data-mat="term">
+              <div class="mat-head" onclick="this.parentElement.classList.toggle('open')">
+                <span class="mat-tog">▸</span>
+                <div class="mat-title">
+                  <span class="mono">MAT-SN-TERM</span>
+                  <span class="mat-nm">Sn 端子鍍層</span>
+                </div>
+                <div class="mat-meta">
+                  <span class="meta-cell"><span class="lab">重量</span><span class="v mono">0.001 g</span></span>
+                  <span class="meta-cell"><span class="lab">占零件</span><span class="v mono">6.2 %</span></span>
+                  <span class="meta-cell"><span class="lab">物質</span><span class="v mono">01</span></span>
+                </div>
+                <div class="mat-actions">
+                  <button class="btn ghost" onclick="event.stopPropagation(); openModal('subsModal')">+ 物質</button>
+                  <button class="btn ghost" onclick="event.stopPropagation()">編輯</button>
+                </div>
+              </div>
+              <div class="subs-list">
+                <div class="subs-row">
+                  <div class="s-name"><b>Sn</b> · 錫</div>
+                  <div class="s-cas mono">7440-31-5</div>
+                  <div class="s-wg num">0.001 g</div>
+                  <div class="s-ppm num">1,000,000 ppm</div>
+                  <div class="s-doc"><a class="doc-link mono">INT-RoHS-25-0451 ↗</a></div>
+                  <div class="s-reg">
+                    <span class="pill pill-ok">RoHS ✓</span>
+                    <span class="pill pill-muted">未列 SVHC</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- === BOM 用途 === -->
+      <div class="subpanel" data-subpanel="d_where">
+        <div class="card">
+          <div class="card-head"><h2>用到此料號的成品(BOM Where-Used)</h2><span class="id">/ USED.BY</span></div>
+          <div class="tbl-scroll"><table>
+            <thead><tr><th>父件料號</th><th>父件版本</th><th>名稱</th><th class="num">數量</th><th>位置</th><th>生效區間</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">ASSY-CTRL-01</td><td class="mono">Rev.C</td><td>控制器組件</td><td class="num mono">24</td><td class="mono">C1..C24</td><td class="mono">2026-06-01 → 至今</td></tr>
+              <tr><td class="mono">ASSY-PWR-02</td><td class="mono">Rev.B</td><td>電源模組</td><td class="num mono">8</td><td class="mono">C1..C8</td><td class="mono">2026-04-15 → 至今</td></tr>
+              <tr><td class="mono">ASSY-IO-14</td><td class="mono">Rev.A</td><td>IO 擴充板</td><td class="num mono">4</td><td class="mono">C3,C7,C11,C15</td><td class="mono">2026-01-10 → 至今</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- === 文件 === -->
+      <div class="subpanel" data-subpanel="d_docs">
+        <div class="card">
+          <div class="card-head">
+            <h2>該料號所有文件</h2><span class="id">/ DOCS</span>
+            <div class="actions"><button class="btn primary" onclick="openModal('docModal')">+ 新增文件</button></div>
+          </div>
+          <div class="tbl-scroll"><table>
+            <thead><tr><th>類型</th><th>編號</th><th>檢驗機構</th><th>發行日</th><th>到期日</th><th>狀態</th><th></th></tr></thead>
+            <tbody>
+              <tr class="row-expired"><td><span class="pill pill-muted">SDS</span></td><td class="mono">MUR-SDS-C0603-2022</td><td>Murata</td><td class="mono">2022-03-01</td><td class="mono">2025-03-01</td><td><span class="pill pill-danger"><span class="dot"></span>已過期 186d</span></td><td><button class="btn ghost">開啟</button></td></tr>
+              <tr class="row-duesoon"><td><span class="pill pill-muted">測報</span></td><td class="mono">INT-RoHS-25-0451</td><td>Intertek</td><td class="mono">2025-11-15</td><td class="mono">2026-11-15</td><td><span class="pill pill-warn"><span class="dot"></span>剩 73d</span></td><td><button class="btn ghost">開啟</button></td></tr>
+              <tr class="row-ok"><td><span class="pill pill-muted">聲明</span></td><td class="mono">MUR-DECL-2026-Q3</td><td>Murata</td><td class="mono">2026-07-01</td><td class="mono">2027-07-01</td><td><span class="pill pill-ok"><span class="dot"></span>有效</span></td><td><button class="btn ghost">開啟</button></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- === 變更歷程 === -->
+      <div class="subpanel" data-subpanel="d_changes">
+        <div class="card">
+          <div class="card-head"><h2>Revision 與 PCN 歷程</h2><span class="id">/ HISTORY</span></div>
+          <div class="tbl-scroll"><table>
+            <thead><tr><th>版本</th><th>生效區間</th><th>觸發 PCN</th><th>變更說明</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">Rev.C</td><td class="mono">2026-06-01 → 至今</td><td class="mono">PCN00000127</td><td>Murata 換料 GRM188R71H104K → GCM188R71H104K</td></tr>
+              <tr><td class="mono">Rev.B</td><td class="mono">2025-08-01 → 2026-06-01</td><td class="mono">PCN00000105</td><td>SDS 更新至 2025 版</td></tr>
+              <tr><td class="mono">Rev.A</td><td class="mono">2024-11-08 → 2025-08-01</td><td class="mono">—</td><td>初版建立</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+
+    </section>
   </main>
+</div>
+
+<!-- ============ MODALS: NEW MATERIAL ============ -->
+<div class="modal-scrim" data-modal="matModal">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="sec-tag">DETAIL / NEW MATERIAL</span>
+      <h2>新增均質材料</h2>
+      <button class="close" onclick="closeModal(this)">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="ctx-bar">
+        <span class="ctx-lab">加入至零件</span>
+        <span class="ctx-val mono">CAP-C0603-100nF · Rev.C</span>
+        <span class="ctx-hint">材料屬於此零件的當前 Revision。若為 PCN 觸發的變更,請先建立新 Revision。</span>
+      </div>
+
+      <div class="section-title"><span class="idx">01</span>材料基本</div>
+      <div class="form-grid">
+        <div class="field"><label class="req">材料代碼</label>
+          <input placeholder="MAT-CERAMIC · MAT-CU-LF..."><span class="hint">建議前綴 MAT-,可自訂</span></div>
+        <div class="field"><label class="req">材料名稱</label>
+          <input placeholder="陶瓷介電體 / Ni 電極 / ABS 樹脂..."></div>
+        <div class="field"><label>材質分類</label>
+          <select>
+            <option>金屬 / 合金</option>
+            <option>陶瓷 / 玻璃</option>
+            <option>塑膠 / 樹脂</option>
+            <option>橡膠 / 彈性體</option>
+            <option>焊料 / 塗層</option>
+            <option>其他</option>
+          </select>
+        </div>
+        <div class="field"><label>位置說明</label>
+          <input placeholder="外殼 / 電極 / 端子..."></div>
+      </div>
+
+      <div class="section-title"><span class="idx">02</span>重量</div>
+      <div class="form-grid">
+        <div class="field"><label class="req">重量 (g)</label>
+          <input type="number" step="0.0001" placeholder="0.012"></div>
+        <div class="field"><label>占零件總重(自動)</label>
+          <input placeholder="系統計算" readonly><span class="hint">存檔後自動根據零件標稱重量計算</span></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <div class="flow"></div>
+      <button class="btn ghost" onclick="closeModal(this)">取消</button>
+      <button class="btn primary">建立材料</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODALS: NEW SUBSTANCE ============ -->
+<div class="modal-scrim" data-modal="subsModal">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="sec-tag">DETAIL / NEW SUBSTANCE</span>
+      <h2>新增物質(至此材料)</h2>
+      <button class="close" onclick="closeModal(this)">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="ctx-bar">
+        <span class="ctx-lab">加入至材料</span>
+        <span class="ctx-val mono">MAT-CERAMIC · 陶瓷介電體</span>
+        <span class="ctx-hint">物質層決定 RoHS / REACH / Prop 65 等法規適用門檻,請以檢驗報告為準填寫。</span>
+      </div>
+
+      <div class="section-title"><span class="idx">01</span>物質識別</div>
+      <div class="form-grid">
+        <div class="field"><label class="req">物質(從主檔搜尋)</label>
+          <input placeholder="輸入 CAS 或英文 / 中文名稱...">
+          <span class="hint">系統會比對 Substance 主檔;若未收錄可於下方切換為手動輸入</span>
+        </div>
+        <div class="field"><label>CAS No.</label>
+          <input placeholder="1313-99-1" class="mono"></div>
+        <div class="field"><label>英文名稱</label>
+          <input placeholder="Barium Titanate"></div>
+        <div class="field"><label>中文名稱</label>
+          <input placeholder="鈦酸鋇"></div>
+      </div>
+
+      <div class="section-title"><span class="idx">02</span>含量</div>
+      <div class="form-grid">
+        <div class="field"><label class="req">物質重量 (g)</label>
+          <input type="number" step="0.000001" placeholder="0.010"></div>
+        <div class="field"><label>PPM(自動 / 可覆寫)</label>
+          <input placeholder="系統依材料重量計算">
+          <span class="hint">= 物質重量 / 材料重量 × 10⁶</span>
+        </div>
+      </div>
+
+      <div class="section-title"><span class="idx">03</span>來源文件</div>
+      <div class="form-grid">
+        <div class="field" style="grid-column: 1 / -1;">
+          <label>連結來源文件(測報 / SDS)</label>
+          <select>
+            <option value="">尚未指派</option>
+            <option>INT-RoHS-25-0451 · Intertek</option>
+            <option>MUR-SDS-C0603-2022 · Murata</option>
+            <option>MUR-DECL-2026-Q3 · Murata</option>
+          </select>
+          <span class="hint">物質含量若有明確來源,填後該行會顯示可點的文件連結</span>
+        </div>
+      </div>
+
+      <div class="section-title"><span class="idx">04</span>法規對照(自動判定)</div>
+      <div class="form-grid wide">
+        <div class="field">
+          <label>系統將自動比對</label>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; padding: 6px 0;">
+            <span class="pill pill-muted">RoHS Annex II</span>
+            <span class="pill pill-muted">REACH SVHC 候選清單</span>
+            <span class="pill pill-muted">REACH Annex XIV/XVII</span>
+            <span class="pill pill-muted">Prop 65</span>
+            <span class="pill pill-muted">POPs / PFAS</span>
+            <span class="pill pill-muted">衝突礦產 3TG+Co</span>
+          </div>
+          <span class="hint">存檔後會顯示適用法規、門檻與是否需申報</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <div class="flow"></div>
+      <button class="btn ghost" onclick="closeModal(this)">取消</button>
+      <button class="btn primary">建立物質</button>
+    </div>
+  </div>
 </div>
 
 <!-- ============ MODALS: NEW PCN ============ -->
@@ -1461,17 +2083,24 @@ const ownerChip = (o) => o
   ? `<span class="owner"><span class="dot"></span>${o}</span>`
   : `<button class="btn ghost" style="padding:4px 10px; font-size:10px;">認領</button>`;
 
-document.getElementById("partRows").innerHTML = PARTS.map(r => `
-  <tr>
-    <td class="mono">${r[0]}</td>
-    <td>${r[1]}</td>
-    <td class="mono" style="color:var(--muted)">${r[2]}</td>
-    <td>${r[3]}</td>
+const esc = (s) => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+document.getElementById("partRows").innerHTML = PARTS.map((r, i) => `
+  <tr data-idx="${i}" class="part-row">
+    <td class="mono">${esc(r[0])}</td>
+    <td>${esc(r[1])}</td>
+    <td class="mono" style="color:var(--muted)">${esc(r[2])}</td>
+    <td>${esc(r[3])}</td>
     <td class="num mono">${r[4].toLocaleString()}</td>
-    <td class="mono" style="color:var(--muted)">${r[5]}</td>
+    <td class="mono" style="color:var(--muted)">${esc(r[5])}</td>
     <td>${statusPill(r[6])}</td>
-    <td>${ownerChip(r[7])}</td>
+    <td class="claim-cell">${ownerChip(r[7])}</td>
   </tr>`).join("");
+document.getElementById("partRows").addEventListener("click", (e) => {
+  if (e.target.closest(".claim-cell")) return;
+  const tr = e.target.closest(".part-row"); if (!tr) return;
+  const r = PARTS[+tr.dataset.idx];
+  openDetail(r[0], r[1], r[2], r[3], r[6], r[7]);
+});
 
 function renderNode(n, open=false){
   const kids = (n.children||[]).length
@@ -1532,22 +2161,56 @@ document.getElementById("docRows").innerHTML = DOCS.map(r => {
 }).join("");
 
 // ========= Tab nav =========
+window.switchTab = (name) => {
+  document.querySelectorAll(".nav-item").forEach(x =>
+    x.classList.toggle("active", x.dataset.tab === name));
+  document.querySelectorAll(".panel").forEach(p =>
+    p.classList.toggle("on", p.dataset.panel === name));
+  window.scrollTo({ top: 0, behavior: "instant" });
+};
 document.querySelectorAll(".nav-item[data-tab]").forEach(el => {
   el.setAttribute("tabindex", "0");
   el.setAttribute("role", "tab");
-  const activate = () => {
-    document.querySelectorAll(".nav-item").forEach(x => x.classList.remove("active"));
-    el.classList.add("active");
-    const t = el.dataset.tab;
-    document.querySelectorAll(".panel").forEach(p =>
-      p.classList.toggle("on", p.dataset.panel === t));
-    window.scrollTo({ top: 0, behavior: "instant" });
-  };
+  const activate = () => switchTab(el.dataset.tab);
   el.addEventListener("click", activate);
   el.addEventListener("keydown", (e) => {
     if (e.key === "Enter" || e.key === " ") { e.preventDefault(); activate(); }
   });
 });
+
+// ========= Sub-tabs (inside 零件詳情) =========
+document.querySelectorAll(".subtab").forEach(el => {
+  el.addEventListener("click", () => {
+    const wrap = el.closest("section");
+    wrap.querySelectorAll(".subtab").forEach(x => x.classList.remove("active"));
+    el.classList.add("active");
+    const t = el.dataset.subtab;
+    wrap.querySelectorAll(".subpanel").forEach(p =>
+      p.classList.toggle("on", p.dataset.subpanel === t));
+  });
+});
+
+// ========= Open part detail =========
+window.openDetail = (pn, name, mpn, supp, status, owner) => {
+  document.getElementById("d_pn").textContent   = pn;
+  document.getElementById("d_name").textContent = name;
+  document.getElementById("d_mpn").textContent  = mpn || "—";
+  document.getElementById("d_supp").textContent = supp || "—";
+  document.getElementById("d_title").textContent = name;
+  const statusMap = { active:["pill-ok","使用中"], obsolete:["pill-danger","已失效"], pending:["pill-warn","待審"] };
+  const [cls, txt] = statusMap[status] || ["pill-muted", status];
+  document.getElementById("d_status").innerHTML = `<span class="pill ${cls}"><span class="dot"></span>${txt}</span>`;
+  document.getElementById("d_owner").innerHTML  = owner
+    ? `<span class="owner"><span class="dot"></span>${owner}</span>`
+    : `<span style="color:var(--muted)">—</span>`;
+  document.getElementById("d_rev").textContent = "Rev.C · " + txt;
+  // reset to overview subtab
+  document.querySelectorAll("[data-panel='detail'] .subtab").forEach((s, i) =>
+    s.classList.toggle("active", i === 0));
+  document.querySelectorAll("[data-panel='detail'] .subpanel").forEach((p, i) =>
+    p.classList.toggle("on", i === 0));
+  switchTab("detail");
+};
 
 // ========= Custom dropdown (inside modals) =========
 function initCustomSelect(sel) {
