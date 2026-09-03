@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GPBOM — Green Product BOM</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="/static/styles.css">
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased">
+
+<!-- Login screen -->
+<div id="login" class="hidden fixed inset-0 bg-slate-100 flex items-center justify-center">
+  <form id="loginForm" class="bg-white rounded-xl shadow p-8 w-80 space-y-4">
+    <h1 class="text-xl font-semibold">GPBOM 登入</h1>
+    <input name="username" placeholder="username" required
+           class="w-full border rounded px-3 py-2">
+    <input name="password" type="password" placeholder="password" required
+           class="w-full border rounded px-3 py-2">
+    <button class="w-full bg-slate-900 text-white rounded py-2">登入</button>
+    <p id="loginErr" class="text-red-600 text-sm hidden"></p>
+  </form>
+</div>
+
+<!-- App shell -->
+<div id="app" class="hidden min-h-screen flex flex-col">
+  <header class="bg-white border-b flex items-center gap-6 px-6 py-3">
+    <div class="font-bold text-lg">GPBOM</div>
+    <nav class="flex gap-4 text-sm">
+      <button data-tab="parts"     class="tab-btn">料號</button>
+      <button data-tab="bom"       class="tab-btn">BOM</button>
+      <button data-tab="substance" class="tab-btn">物質搜尋</button>
+      <button data-tab="expiring"  class="tab-btn">過期文件</button>
+      <button data-tab="claims"    class="tab-btn">認領</button>
+    </nav>
+    <div class="ml-auto text-sm text-slate-600">
+      <span id="who"></span>
+      <button id="logout" class="ml-3 underline">登出</button>
+    </div>
+  </header>
+
+  <main class="flex-1 p-6">
+    <!-- Parts -->
+    <section data-panel="parts" class="panel">
+      <div class="flex gap-2 mb-4">
+        <input id="partQ" placeholder="搜尋料號或名稱..." class="border rounded px-3 py-2 w-72">
+        <select id="partStatus" class="border rounded px-2">
+          <option value="">全部狀態</option>
+          <option value="active">使用中</option>
+          <option value="obsolete">已失效</option>
+          <option value="pending">待審</option>
+        </select>
+        <button id="partSearch" class="bg-slate-900 text-white rounded px-4">查詢</button>
+      </div>
+      <div class="bg-white rounded-lg shadow overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead class="bg-slate-100">
+            <tr>
+              <th class="p-2 text-left">料號</th>
+              <th class="p-2 text-left">名稱</th>
+              <th class="p-2 text-left">類別</th>
+              <th class="p-2 text-left">狀態</th>
+              <th class="p-2 text-right">庫存</th>
+              <th class="p-2 text-left">最後採購</th>
+              <th class="p-2"></th>
+            </tr>
+          </thead>
+          <tbody id="partRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- BOM -->
+    <section data-panel="bom" class="panel hidden">
+      <div class="flex gap-2 mb-4 items-center">
+        <input id="bomPartId" type="number" placeholder="輸入料號 ID" class="border rounded px-3 py-2 w-40">
+        <button id="bomLoad" class="bg-slate-900 text-white rounded px-4">展開 BOM</button>
+        <span class="text-sm text-slate-500">
+          點選節點展開／收合;紅色 = 已失效
+        </span>
+      </div>
+      <div id="bomTree" class="bg-white rounded-lg shadow p-4 font-mono text-sm"></div>
+    </section>
+
+    <!-- Substance search -->
+    <section data-panel="substance" class="panel hidden">
+      <div class="flex gap-2 mb-4">
+        <input id="subCas"  placeholder="CAS No. (e.g. 1333-86-4)" class="border rounded px-3 py-2 w-56">
+        <input id="subName" placeholder="或物質名稱 (Carbon Black)" class="border rounded px-3 py-2 w-72">
+        <button id="subSearch" class="bg-slate-900 text-white rounded px-4">搜尋</button>
+      </div>
+      <div class="bg-white rounded-lg shadow overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead class="bg-slate-100">
+            <tr>
+              <th class="p-2 text-left">物質</th>
+              <th class="p-2 text-left">CAS</th>
+              <th class="p-2 text-left">料號</th>
+              <th class="p-2 text-left">零件名稱</th>
+              <th class="p-2 text-left">均質材料</th>
+              <th class="p-2 text-right">重量 (g)</th>
+              <th class="p-2 text-right">ppm</th>
+            </tr>
+          </thead>
+          <tbody id="subRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Expiring docs -->
+    <section data-panel="expiring" class="panel hidden">
+      <div class="bg-white rounded-lg shadow overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead class="bg-slate-100">
+            <tr>
+              <th class="p-2 text-left">文件類型</th>
+              <th class="p-2 text-left">編號</th>
+              <th class="p-2 text-left">標題</th>
+              <th class="p-2 text-left">發行日</th>
+              <th class="p-2 text-left">到期日</th>
+              <th class="p-2 text-left">狀態</th>
+            </tr>
+          </thead>
+          <tbody id="expRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Claims -->
+    <section data-panel="claims" class="panel hidden">
+      <div class="bg-white rounded-lg shadow overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead class="bg-slate-100">
+            <tr>
+              <th class="p-2 text-left">料號</th>
+              <th class="p-2 text-left">名稱</th>
+              <th class="p-2 text-left">認領人</th>
+              <th class="p-2 text-left">認領時間</th>
+              <th class="p-2 text-left">原因</th>
+              <th class="p-2"></th>
+            </tr>
+          </thead>
+          <tbody id="claimRows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

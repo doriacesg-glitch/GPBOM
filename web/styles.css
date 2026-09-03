@@ -1,0 +1,17 @@
+.tab-btn      { padding: .25rem .75rem; border-radius: .375rem; }
+.tab-btn:hover{ background: rgb(226 232 240); }
+.tab-active   { background: rgb(15 23 42); color: white; }
+.tab-active:hover { background: rgb(15 23 42); }
+
+.badge        { display:inline-block; padding: 0 .5rem; border-radius: 9999px;
+                font-size: .7rem; line-height: 1.25rem; }
+.badge-active   { background: #dcfce7; color: #166534; }
+.badge-obsolete { background: #fee2e2; color: #991b1b; }
+.badge-pending  { background: #fef3c7; color: #92400e; }
+
+.expired    { background: #fee2e2 !important; }
+.duesoon    { background: #fef3c7 !important; }
+
+.tree-node  { padding: 2px 0; }
+.tree-toggle{ cursor: pointer; display:inline-block; width: 1rem; color:#64748b; }
+.tree-kids  { margin-left: 1.25rem; border-left: 1px dashed #cbd5e1; padding-left: .5rem; }

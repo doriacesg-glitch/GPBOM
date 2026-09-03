@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: gpbom
+      POSTGRES_PASSWORD: gpbom_dev_pw
+      POSTGRES_DB: gpbom
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/00_schema.sql:ro
+    ports:
+      - "127.0.0.1:5432:5432"      # localhost only
+    restart: unless-stopped
+
+  api:
+    build: ./api
+    environment:
+      DATABASE_URL: postgresql+psycopg://gpbom:gpbom_dev_pw@db:5432/gpbom
+      GPBOM_SESSION_SECRET: change-me-in-prod
+    ports:
+      - "127.0.0.1:8000:8000"      # localhost only
+    depends_on:
+      - db
+    volumes:
+      - ./web:/app/web:ro
+    restart: unless-stopped
+
+volumes:
+  pgdata:
