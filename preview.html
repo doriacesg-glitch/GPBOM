@@ -41,8 +41,8 @@
   --danger:    #FF4B6A;
   --danger-bg: rgba(255, 75, 106, 0.10);
 
-  --disp: "Orbitron", "Chakra Petch", "Noto Sans TC", sans-serif;
-  --sans: "Chakra Petch", "Noto Sans TC", ui-sans-serif, system-ui, sans-serif;
+  --disp: "Orbitron", "Chakra Petch", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --sans: "Noto Sans TC", "Chakra Petch", "PingFang TC", "Microsoft JhengHei", ui-sans-serif, system-ui, sans-serif;
   --mono: "Share Tech Mono", "JetBrains Mono", ui-monospace, Menlo, monospace;
 
   --gap: 20px;
@@ -54,12 +54,21 @@ html, body { margin: 0; padding: 0; }
 body {
   background: var(--bg);
   color: var(--ink);
-  font: 400 14px/1.6 var(--sans);
+  font: 400 15px/1.75 var(--sans);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   overflow-x: hidden;
   position: relative;
 }
+/* Chinese never benefits from letter-spacing; strip it in Chinese-heavy strings.
+   Keep it on all-English HUD eyebrows / mono labels (they're set elsewhere). */
+.subtitle, .demo-banner span:not(.tag), td:not(.mono), .node .nm,
+.field label:not(.req)::before, .field label { letter-spacing: 0; }
+/* But keep the HUD eyebrow letter-spacing on labels that are English-only */
+.eyebrow, .kpi .lab, .kpi .sub, .risk .lab, .section-title,
+.pill, .owner, .btn { letter-spacing: .12em; }
+h1, h2 { letter-spacing: .04em; }
 
 /* Cosmic depth: radial vignettes + faint hex grid */
 body::before {
@@ -79,19 +88,7 @@ body::after {
 }
 .shell, .theme-toggle, .modal-scrim { position: relative; z-index: 1; }
 
-/* Scan-line (very subtle) */
 @media (prefers-reduced-motion: no-preference) {
-  body > .scan {
-    position: fixed; left: 0; right: 0; top: 0; height: 90px; z-index: 2; pointer-events: none;
-    background: linear-gradient(to bottom, transparent, rgba(0,255,255,.06) 50%, transparent);
-    animation: scanline 9s linear infinite;
-  }
-  @keyframes scanline {
-    0%   { transform: translateY(-90px); opacity: 0; }
-    10%  { opacity: 1; }
-    90%  { opacity: 1; }
-    100% { transform: translateY(100vh); opacity: 0; }
-  }
   @keyframes breathe {
     0%,100% { opacity: .55; }
     50%     { opacity: 1; }
@@ -531,27 +528,52 @@ li.hidden > ul { display: none; }
 .modal-body { padding: 22px; display: grid; gap: 18px; }
 .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px 20px; }
 .form-grid.wide { grid-template-columns: 1fr; }
-.field { display: flex; flex-direction: column; gap: 6px; position: relative; }
+.field {
+  display: flex; flex-direction: column; gap: 8px; position: relative;
+  padding: 10px 12px 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  transition: background .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
 .field label {
-  font: 500 10px/1 var(--sans); letter-spacing: .22em; text-transform: uppercase;
+  font: 500 11px/1 var(--sans); letter-spacing: .18em; text-transform: uppercase;
   color: var(--muted);
-  display: flex; align-items: center; gap: 6px;
+  display: flex; align-items: center; gap: 8px;
+  transition: color .18s ease;
 }
 .field label.req::before {
-  content: ""; width: 6px; height: 6px; background: var(--accent);
-  box-shadow: 0 0 8px var(--accent);
+  content: ""; width: 7px; height: 7px; background: var(--muted);
+  box-shadow: none;
+  transition: background .18s ease, box-shadow .18s ease;
 }
 .field input, .field select, .field textarea {
   background: transparent; border: 0; border-bottom: 1px solid var(--line-2);
-  padding: 8px 4px; min-height: 36px;
-  font: 500 14px/1.4 var(--sans); color: var(--ink);
+  padding: 8px 4px; min-height: 38px;
+  font: 500 15px/1.5 var(--sans); color: var(--ink);
+  transition: border-color .18s ease;
 }
-.field input:focus, .field select:focus, .field textarea:focus {
+.field textarea { min-height: 100px; resize: vertical; font-family: var(--sans); }
+.field .hint { font: 400 11px/1.4 var(--mono); color: var(--muted-2); letter-spacing: .06em; }
+
+/* --- FOCUS: whole wrapper lights up, label brightens, marker glows --- */
+.field:focus-within {
+  background: rgba(0, 255, 255, 0.06);
+  border-color: var(--accent-dim);
+  box-shadow: 0 0 28px -6px rgba(0, 255, 255, 0.35),
+              inset 0 0 24px rgba(0, 255, 255, 0.04);
+}
+.field:focus-within label { color: var(--accent); }
+.field:focus-within label.req::before {
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+}
+.field:focus-within input,
+.field:focus-within select,
+.field:focus-within textarea {
   border-bottom-color: var(--accent);
-  box-shadow: 0 1px 0 var(--accent), 0 8px 20px -12px var(--accent);
+  border-bottom-width: 2px;
+  padding-bottom: 7px; /* offset for +1px border */
 }
-.field textarea { min-height: 96px; resize: vertical; font-family: var(--sans); }
-.field .hint { font: 400 10px/1.4 var(--mono); color: var(--muted-2); letter-spacing: .12em; }
 
 .section-title {
   font: 600 10px/1 var(--disp); letter-spacing: .28em; text-transform: uppercase;
@@ -564,6 +586,127 @@ li.hidden > ul { display: none; }
   border: 1px solid var(--accent); color: var(--accent);
   font: 400 10px/1 var(--mono);
 }
+
+/* Custom dropdown (replaces native <select> inside modals so options
+   render on our dark glass background rather than the OS white popup) */
+.cs { position: relative; }
+.cs-btn {
+  width: 100%; text-align: left;
+  background: transparent; border: 0; border-bottom: 1px solid var(--line-2);
+  padding: 8px 28px 8px 4px; min-height: 38px;
+  font: 500 15px/1.5 var(--sans); color: var(--ink);
+  cursor: pointer; position: relative;
+  transition: border-color .18s ease;
+}
+.cs-btn::after {
+  content: ""; position: absolute; right: 10px; top: 50%; width: 8px; height: 8px;
+  border-right: 1.5px solid var(--accent-dim); border-bottom: 1.5px solid var(--accent-dim);
+  transform: translateY(-70%) rotate(45deg);
+  transition: transform .18s ease, border-color .18s ease;
+}
+.cs.open .cs-btn::after { transform: translateY(-30%) rotate(-135deg); border-color: var(--accent); }
+.field:focus-within .cs-btn { border-bottom-color: var(--accent); border-bottom-width: 2px; }
+
+/* Toolbar variant: framed pill, not underline */
+.toolbar .cs { display: inline-block; min-width: 160px; }
+.toolbar .cs-btn {
+  border: 1px solid var(--line-2); background: rgba(0,20,30,.5);
+  padding: 9px 32px 9px 12px; min-height: 40px;
+  font: 500 13px/1 var(--sans); color: var(--ink);
+}
+.toolbar .cs.open .cs-btn,
+.toolbar .cs-btn:hover { border-color: var(--accent-dim); color: var(--accent); }
+
+.cs-pop {
+  position: absolute; left: -8px; right: -8px; top: calc(100% + 6px);
+  z-index: 5;
+  background: linear-gradient(180deg, rgba(10, 20, 40, 0.92), rgba(6, 14, 28, 0.94));
+  backdrop-filter: blur(18px);
+  border: 1px solid var(--accent);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 24px rgba(0, 255, 255, 0.2);
+  max-height: 280px; overflow-y: auto;
+  display: none;
+}
+.cs.open .cs-pop { display: block; }
+.cs-opt {
+  padding: 10px 14px; cursor: pointer;
+  font: 500 14px/1.4 var(--sans); color: var(--ink-2);
+  border-bottom: 1px solid var(--line-3);
+  display: flex; align-items: center; gap: 10px;
+}
+.cs-opt:last-child { border-bottom: 0; }
+.cs-opt:hover, .cs-opt.hi { background: rgba(0, 255, 255, 0.10); color: var(--accent); }
+.cs-opt.sel { color: var(--accent); }
+.cs-opt.sel::before {
+  content: ""; width: 6px; height: 6px; background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+}
+.cs-opt:not(.sel)::before {
+  content: ""; width: 6px; height: 6px; border: 1px solid var(--muted-2);
+}
+
+/* Context bar (父件由系統帶入,唯讀狀態的高階顯示,不占欄位) */
+.ctx-bar {
+  display: grid; grid-template-columns: auto auto 1fr; gap: 10px 16px;
+  align-items: center; padding: 12px 14px;
+  border: 1px dashed var(--accent-dim);
+  background: rgba(0, 255, 255, 0.04);
+}
+.ctx-lab {
+  font: 500 10px/1 var(--sans); letter-spacing: .22em; text-transform: uppercase;
+  color: var(--muted);
+}
+.ctx-val {
+  font: 500 14px/1.2 var(--mono); color: var(--accent); letter-spacing: .06em;
+}
+.ctx-hint {
+  grid-column: 1 / -1;
+  font: 400 11px/1.55 var(--sans); color: var(--muted);
+}
+
+/* Info panel (物質層說明) */
+.info-panel {
+  display: grid; grid-template-columns: 32px 1fr; gap: 14px;
+  padding: 16px 18px;
+  border: 1px solid var(--purple);
+  background: linear-gradient(135deg, rgba(191, 0, 255, 0.10), rgba(191, 0, 255, 0.03));
+  position: relative;
+}
+.info-panel::before, .info-panel::after {
+  content: ""; position: absolute; width: 10px; height: 10px;
+  border: 1px solid var(--purple);
+}
+.info-panel::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+.info-panel::after  { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+.info-icon {
+  width: 32px; height: 32px; display: grid; place-items: center;
+  color: var(--purple);
+  border: 1px solid var(--purple);
+  box-shadow: 0 0 12px rgba(191, 0, 255, .25);
+}
+.info-icon svg { width: 18px; height: 18px; }
+.info-title {
+  font: 600 12px/1 var(--sans); letter-spacing: .12em; text-transform: uppercase;
+  color: var(--purple); margin-bottom: 8px;
+}
+.info-body p {
+  margin: 6px 0; font-size: 13.5px; line-height: 1.7; color: var(--ink-2);
+}
+.info-body b { color: var(--ink); font-weight: 600; }
+.info-body .mono {
+  display: inline-block; background: rgba(0,0,0,.25); padding: 2px 8px;
+  color: var(--accent); font-size: 12px;
+}
+.info-actions {
+  display: flex; align-items: center; gap: 12px; margin-top: 12px;
+  flex-wrap: wrap;
+}
+.info-actions .btn[disabled] {
+  opacity: .5; cursor: not-allowed; pointer-events: none;
+  border-style: dashed;
+}
+.info-actions .hint { font: 400 11px/1.4 var(--sans); color: var(--muted); letter-spacing: 0; }
 
 .chip-row { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 4px 4px; }
 .chip {
@@ -589,17 +732,6 @@ li.hidden > ul { display: none; }
     animation: bar-flow 2.6s ease-in-out infinite;
   }
 }
-
-/* Theme toggle */
-.theme-toggle {
-  position: fixed; right: 20px; bottom: 20px; z-index: 20;
-  background: var(--glass); backdrop-filter: blur(10px);
-  border: 1px solid var(--accent); color: var(--accent);
-  padding: 10px 16px; font: 600 11px/1 var(--sans); letter-spacing: .22em;
-  cursor: pointer; text-transform: uppercase;
-  box-shadow: 0 0 22px rgba(0,255,255,.15);
-}
-.theme-toggle:hover { background: var(--accent); color: #001820; }
 
 /* Vertical mark */
 .v-mark {
@@ -630,8 +762,6 @@ li.hidden > ul { display: none; }
   .node .qty, .node .wg { display: none; }
 }
 </style>
-
-<div class="scan"></div>
 
 <div class="shell">
   <!-- ============ SIDEBAR ============ -->
@@ -1128,32 +1258,77 @@ li.hidden > ul { display: none; }
       <button class="close" onclick="closeModal(this)">×</button>
     </div>
     <div class="modal-body">
-      <div class="section-title"><span class="idx">01</span>父件 / 子件</div>
-      <div class="form-grid">
-        <div class="field"><label class="req">父件料號</label><input value="ASSY-CTRL-01" readonly></div>
-        <div class="field"><label class="req">父件版本</label><input value="Rev.C" readonly></div>
-        <div class="field"><label class="req">子件料號(模糊比對)</label>
-          <input placeholder="輸入料號 / 名稱關鍵字..."><span class="hint">會自動比對現有主檔</span></div>
-        <div class="field"><label>位置編號 / Ref-des</label><input placeholder="C1, C2, C3..."></div>
+
+      <!-- 父件由系統帶入,只顯示不占欄位 -->
+      <div class="ctx-bar">
+        <span class="ctx-lab">加入至父件</span>
+        <span class="ctx-val mono">ASSY-CTRL-01 · Rev.C</span>
+        <span class="ctx-hint">父件由目前 BOM 上下文自動帶入,如需切換請關閉視窗先切換 BOM 主體。</span>
       </div>
 
-      <div class="section-title"><span class="idx">02</span>數量 / 重量</div>
+      <div class="section-title"><span class="idx">01</span>選擇子件</div>
       <div class="form-grid">
-        <div class="field"><label class="req">數量</label><input type="number" value="1" min="0" step="0.01"></div>
-        <div class="field"><label>單位</label><input value="pcs"></div>
-        <div class="field"><label>單位重量 (g/父件)</label><input type="number" step="0.0001" placeholder="0.024"></div>
-        <div class="field"><label>備註</label><input placeholder="裝配位置、注意事項"></div>
-      </div>
-
-      <div class="section-title"><span class="idx">03</span>生效範圍</div>
-      <div class="form-grid">
-        <div class="field"><label class="req">生效起</label><input type="date" value="2026-09-03"></div>
-        <div class="field"><label>生效迄(空白=仍有效)</label><input type="date"></div>
         <div class="field" style="grid-column: 1 / -1;">
-          <label>連結 PCN(若此變更由 PCN 觸發)</label>
-          <select><option>—</option><option>PCN00000128</option><option>PCN00000127</option></select>
+          <label class="req">子件料號(輸入關鍵字模糊比對)</label>
+          <input placeholder="例如:CAP-C0603 · MCU · Chip Cap...">
+          <span class="hint">若尚未建立,請先至 SEC.01 料號主檔新增料號再回來</span>
+        </div>
+        <div class="field">
+          <label>位置編號 / Ref-des</label>
+          <input placeholder="C1, C2, C3 · 空白也可">
+        </div>
+        <div class="field">
+          <label class="req">數量</label>
+          <input type="number" value="1" min="0" step="0.01">
         </div>
       </div>
+
+      <div class="section-title"><span class="idx">02</span>生效範圍</div>
+      <div class="form-grid">
+        <div class="field">
+          <label class="req">生效起</label>
+          <input type="date" value="2026-09-03">
+        </div>
+        <div class="field">
+          <label>生效迄(空白=仍有效)</label>
+          <input type="date">
+        </div>
+        <div class="field" style="grid-column: 1 / -1;">
+          <label>連結 PCN(若此變更由 PCN 觸發)</label>
+          <select>
+            <option value="">—</option>
+            <option>PCN00000128</option>
+            <option>PCN00000127</option>
+            <option>PCN00000126</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 物質層說明:重要 IA 決策 -->
+      <div class="info-panel">
+        <div class="info-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 8v4M12 16h.01"/>
+          </svg>
+        </div>
+        <div class="info-body">
+          <div class="info-title">物質細項不在此處填寫</div>
+          <p>
+            物質與均質材料屬於<b>子件本身</b>的屬性,而不是 BOM 關係的屬性 —
+            同一顆料號可能被多個成品使用,重複填會造成不一致。
+          </p>
+          <p>
+            請至該子件詳情頁的<b>「材料組成」</b>頁籤逐層維護:
+            <span class="mono">零件 → 均質材料(如 ABS 樹脂 · 銅腳架)→ 物質(Carbon Black 25000 ppm)</span>
+          </p>
+          <div class="info-actions">
+            <button class="btn" disabled>開啟子件材料組成 →</button>
+            <span class="hint">請先於上方選定子件後,此按鈕才可用</span>
+          </div>
+        </div>
+      </div>
+
     </div>
     <div class="modal-foot">
       <div class="flow"></div>
@@ -1218,8 +1393,6 @@ li.hidden > ul { display: none; }
     </div>
   </div>
 </div>
-
-<button class="theme-toggle" id="themeBtn">TOGGLE PALETTE</button>
 
 <script>
 // ========= Mock data =========
@@ -1376,6 +1549,49 @@ document.querySelectorAll(".nav-item[data-tab]").forEach(el => {
   });
 });
 
+// ========= Custom dropdown (inside modals) =========
+function initCustomSelect(sel) {
+  if (sel.dataset.csInit) return;
+  sel.dataset.csInit = "1";
+  const opts = [...sel.options].map(o => ({ value: o.value || o.text, text: o.text }));
+  const wrap = document.createElement("div"); wrap.className = "cs";
+  const btn  = document.createElement("button"); btn.type = "button"; btn.className = "cs-btn";
+  const pop  = document.createElement("div"); pop.className = "cs-pop";
+
+  const setValue = (v) => {
+    sel.value = v;
+    const chosen = opts.find(o => o.value === v) || opts[0];
+    btn.textContent = chosen.text;
+    [...pop.children].forEach(c => c.classList.toggle("sel", c.dataset.v === v));
+    sel.dispatchEvent(new Event("change", { bubbles: true }));
+  };
+
+  opts.forEach(o => {
+    const el = document.createElement("div"); el.className = "cs-opt";
+    el.dataset.v = o.value; el.textContent = o.text;
+    el.addEventListener("click", () => { setValue(o.value); wrap.classList.remove("open"); });
+    pop.appendChild(el);
+  });
+  wrap.append(btn, pop);
+  sel.style.display = "none";
+  sel.parentNode.insertBefore(wrap, sel);
+  wrap.appendChild(sel);
+
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    document.querySelectorAll(".cs.open").forEach(x => { if (x !== wrap) x.classList.remove("open"); });
+    wrap.classList.toggle("open");
+  });
+  setValue(sel.value || opts[0].value);
+}
+function initCustomSelects(root = document) {
+  root.querySelectorAll(".field select, .toolbar select").forEach(initCustomSelect);
+}
+document.addEventListener("click", () => {
+  document.querySelectorAll(".cs.open").forEach(x => x.classList.remove("open"));
+});
+initCustomSelects();
+
 // ========= Modals =========
 window.openModal = (id) => {
   const m = document.querySelector(`.modal-scrim[data-modal="${id}"]`);
@@ -1395,24 +1611,4 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-// ========= Theme toggle (palette) =========
-let paletteState = 0;
-document.getElementById("themeBtn").addEventListener("click", () => {
-  const root = document.documentElement;
-  paletteState = (paletteState + 1) % 2;
-  if (paletteState === 1) {
-    // Electric purple accent variant
-    root.style.setProperty("--accent",     "#BF00FF");
-    root.style.setProperty("--accent-2",   "#8A2BE2");
-    root.style.setProperty("--accent-dim", "rgba(191,0,255,.55)");
-    root.style.setProperty("--accent-bg",  "rgba(191,0,255,.10)");
-    root.style.setProperty("--focus",      "0 0 0 2px rgba(191,0,255,.35), 0 0 20px rgba(191,0,255,.35)");
-  } else {
-    root.style.removeProperty("--accent");
-    root.style.removeProperty("--accent-2");
-    root.style.removeProperty("--accent-dim");
-    root.style.removeProperty("--accent-bg");
-    root.style.removeProperty("--focus");
-  }
-});
 </script>
