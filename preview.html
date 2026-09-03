@@ -1,58 +1,52 @@
-<title>GPBOM Preview</title>
+<title>GPBOM 綠色產品管理系統</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700&family=Chakra+Petch:wght@400;500;600;700&family=Share+Tech+Mono&family=Noto+Sans+TC:wght@400;500;600;700&display=swap">
 
 <style>
 /* =========================================================
-   GPBOM · Industrial Blueprint · Orange
-   Palette anchored on Blueprint Blue #002244 with a 32px
-   drafted grid, restrained industrial-safety orange used only
-   where attention must snap. Dark-grey variant via data-theme.
+   GPBOM · Sci-fi HUD · Glassmorphism · Traditional Chinese
+   Cosmic black ground, cyan HUD wireframe, glass panels
+   with restrained breathing motion.
    ========================================================= */
 :root {
-  --bg:        #002244;
-  --bg-2:      #00335A;
-  --surface:   #00284E;
-  --surface-2: #002F5A;
-  --line:      rgba(255,255,255,0.14);
-  --line-2:    rgba(255,255,255,0.08);
-  --grid:      rgba(255,255,255,0.05);
-  --ink:       #E6EEF7;
-  --ink-2:     #C4D3E4;
-  --muted:     #7EA0C4;
-  --muted-2:   #4E6A87;
+  --bg:        #05070E;
+  --bg-2:      #0A0F1A;
 
-  --accent:    #FF6B1A;         /* industrial safety orange */
-  --accent-2:  #FF8A3D;
-  --accent-bg: rgba(255,107,26,0.14);
+  --glass:     rgba(18, 32, 56, 0.35);
+  --glass-2:   rgba(24, 44, 74, 0.28);
+  --glass-hi:  rgba(0, 255, 255, 0.05);
 
-  --ok:        #00D97E;
-  --ok-bg:     rgba(0,217,126,0.13);
-  --warn:      #FFB020;
-  --warn-bg:   rgba(255,176,32,0.13);
-  --danger:    #FF3B30;
-  --danger-bg: rgba(255,59,48,0.14);
+  --line:      rgba(0, 255, 255, 0.20);
+  --line-2:    rgba(0, 255, 255, 0.08);
+  --line-3:    rgba(224, 252, 255, 0.06);
+  --grid:      rgba(0, 255, 255, 0.035);
 
-  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Noto Sans TC", sans-serif;
+  --ink:       #E0FCFF;
+  --ink-2:     #B9E4EC;
+  --muted:     #7EB0BE;
+  --muted-2:   #4E7885;
+
+  --accent:    #00FFFF;
+  --accent-2:  #40E0D0;
+  --accent-dim:rgba(0, 255, 255, 0.55);
+  --accent-bg: rgba(0, 255, 255, 0.10);
+  --purple:    #BF00FF;
+  --purple-bg: rgba(191, 0, 255, 0.12);
+
+  --ok:        #00FFA3;
+  --ok-bg:     rgba(0, 255, 163, 0.10);
+  --warn:      #FFD24C;
+  --warn-bg:   rgba(255, 210, 76, 0.10);
+  --danger:    #FF4B6A;
+  --danger-bg: rgba(255, 75, 106, 0.10);
+
+  --disp: "Orbitron", "Chakra Petch", "Noto Sans TC", sans-serif;
+  --sans: "Chakra Petch", "Noto Sans TC", ui-sans-serif, system-ui, sans-serif;
+  --mono: "Share Tech Mono", "JetBrains Mono", ui-monospace, Menlo, monospace;
 
   --gap: 20px;
-  --grid-size: 32px;
-  --focus: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
-}
-[data-theme="grey"] {
-  --bg:        #1A1A1A;
-  --bg-2:      #232323;
-  --surface:   #1E1E1E;
-  --surface-2: #262626;
-  --line:      rgba(255,255,255,0.10);
-  --line-2:    rgba(255,255,255,0.06);
-  --grid:      rgba(255,255,255,0.04);
-  --ink:       #F1F1F1;
-  --ink-2:     #CFCFCF;
-  --muted:     #8B8B8B;
-  --muted-2:   #5A5A5A;
+  --focus: 0 0 0 2px rgba(0,255,255,.35), 0 0 20px rgba(0,255,255,.35);
 }
 
 * { box-sizing: border-box; }
@@ -60,343 +54,574 @@ html, body { margin: 0; padding: 0; }
 body {
   background: var(--bg);
   color: var(--ink);
-  font: 400 14px/1.55 var(--sans);
+  font: 400 14px/1.6 var(--sans);
+  min-height: 100vh;
   -webkit-font-smoothing: antialiased;
-  /* Drafted blueprint grid */
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Cosmic depth: radial vignettes + faint hex grid */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(1000px 700px at 15% -10%, rgba(0, 190, 255, 0.10), transparent 60%),
+    radial-gradient(1200px 800px at 100% 110%, rgba(191, 0, 255, 0.08), transparent 55%),
+    radial-gradient(600px 400px at 50% 50%, rgba(0, 60, 90, 0.25), transparent 70%);
+}
+body::after {
+  content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
   background-image:
     linear-gradient(var(--grid) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-  background-size: var(--grid-size) var(--grid-size);
-  min-height: 100vh;
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse at center, black 40%, transparent 90%);
 }
+.shell, .theme-toggle, .modal-scrim { position: relative; z-index: 1; }
+
+/* Scan-line (very subtle) */
 @media (prefers-reduced-motion: no-preference) {
-  * { transition: background-color .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease, opacity .18s ease; }
+  body > .scan {
+    position: fixed; left: 0; right: 0; top: 0; height: 90px; z-index: 2; pointer-events: none;
+    background: linear-gradient(to bottom, transparent, rgba(0,255,255,.06) 50%, transparent);
+    animation: scanline 9s linear infinite;
+  }
+  @keyframes scanline {
+    0%   { transform: translateY(-90px); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translateY(100vh); opacity: 0; }
+  }
+  @keyframes breathe {
+    0%,100% { opacity: .55; }
+    50%     { opacity: 1; }
+  }
+  @keyframes glow-pulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(0,255,255,0), inset 0 0 0 0 rgba(0,255,255,0); }
+    50%     { box-shadow: 0 0 22px rgba(0,255,255,.35), inset 0 0 24px rgba(0,255,255,.05); }
+  }
+  @keyframes ring-spin {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes ring-dash {
+    to { stroke-dashoffset: -240; }
+  }
+  @keyframes bar-flow {
+    0%   { transform: translateX(-30%); }
+    100% { transform: translateX(130%); }
+  }
+  @keyframes tile-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: none; }
+  }
+  * { transition: color .18s ease, background-color .18s ease, border-color .18s ease, box-shadow .18s ease, transform .18s ease; }
 }
 
-/* Selection & focus */
-::selection { background: var(--accent); color: #fff; }
+::selection { background: var(--accent); color: #001820; }
 :focus-visible { outline: none; box-shadow: var(--focus); }
 
 /* Typography helpers */
 .eyebrow {
-  font: 500 10px/1 var(--mono);
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  color: var(--muted);
+  font: 500 10px/1 var(--sans);
+  letter-spacing: .28em; text-transform: uppercase;
+  color: var(--accent-dim);
 }
-.small-caps {
-  font-variant-caps: all-small-caps;
-  letter-spacing: .12em;
-}
-.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; letter-spacing: .04em; }
 .num  { font-variant-numeric: tabular-nums; text-align: right; }
+h1, h2, h3 { font-family: var(--disp); font-weight: 600; letter-spacing: .04em; margin: 0; }
+h1 { font-size: 20px; }
 
 /* =========================================================
-   App shell
+   Shell
    ========================================================= */
 .shell { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
 
 aside.nav {
-  border-right: 1px solid var(--line);
-  padding: 20px 16px 16px;
+  padding: 20px 14px 14px;
+  border-right: 1px solid var(--line-2);
+  background: linear-gradient(180deg, rgba(0,255,255,0.04), transparent 220px);
   display: flex; flex-direction: column;
-  background: linear-gradient(180deg, rgba(0,20,40,.35), transparent 260px);
-  position: relative;
+  backdrop-filter: blur(6px);
 }
-aside.nav::before {
-  /* margin ruler tick */
-  content: ""; position: absolute; top: 0; right: 0; bottom: 0; width: 1px;
-  background: linear-gradient(to bottom, transparent 20px,
-              var(--line) 20px, var(--line) 30px, transparent 30px,
-              transparent calc(100% - 30px),
-              var(--line) calc(100% - 30px), var(--line) calc(100% - 20px), transparent calc(100% - 20px));
-}
-.brand { display: flex; align-items: center; gap: 12px; padding: 4px 4px 20px; }
+
+/* Brand */
+.brand { display: flex; align-items: center; gap: 12px; padding: 4px 6px 22px; }
 .brand-mark {
-  width: 32px; height: 32px; border: 1.25px solid var(--ink);
-  display: grid; place-items: center; color: var(--ink);
-  font: 700 12px/1 var(--mono); position: relative;
+  position: relative; width: 36px; height: 36px;
+  display: grid; place-items: center;
+  color: var(--accent); font: 700 12px/1 var(--disp); letter-spacing: .08em;
 }
-.brand-mark::before, .brand-mark::after {
-  content: ""; position: absolute; background: var(--accent);
+.brand-mark svg { position: absolute; inset: 0; }
+.brand .name {
+  font: 700 15px/1 var(--disp); letter-spacing: .18em; color: var(--ink);
 }
-.brand-mark::before { top: -2px; left: -2px; width: 5px; height: 1.25px; box-shadow: 0 0 0 0 var(--accent); }
-.brand-mark::after  { top: -2px; left: -2px; width: 1.25px; height: 5px; }
-.brand-name { font: 600 15px/1 var(--mono); letter-spacing: .06em; }
-.brand small { display:block; margin-top: 4px; font: 500 9.5px/1 var(--mono); color: var(--muted); letter-spacing: .18em; }
+.brand .sub { display:block; margin-top: 5px; font: 400 9.5px/1 var(--mono); color: var(--accent-dim); letter-spacing: .28em; }
 
 .nav-sec {
-  padding: 18px 8px 6px;
-  font: 500 9.5px/1 var(--mono); letter-spacing: .22em;
-  color: var(--muted-2); text-transform: uppercase;
+  padding: 16px 8px 6px; font: 500 9.5px/1 var(--sans);
+  letter-spacing: .28em; text-transform: uppercase; color: var(--muted-2);
   display: flex; align-items: center; gap: 8px;
 }
-.nav-sec::after { content: ""; flex: 1; border-top: 1px dashed var(--line); }
+.nav-sec::after { content: ""; flex: 1; border-top: 1px dashed var(--line-2); }
 
 .nav-item {
   display: grid; grid-template-columns: 18px 1fr auto;
-  align-items: center; gap: 10px;
-  padding: 10px 10px;
-  font-size: 13px; color: var(--ink-2);
+  align-items: center; gap: 12px;
+  padding: 11px 12px; min-height: 44px;
+  font: 500 12.5px/1 var(--sans); letter-spacing: .1em; color: var(--ink-2);
   cursor: pointer; user-select: none; position: relative;
-  min-height: 44px;
+  border: 1px solid transparent;
 }
-.nav-item svg { width: 16px; height: 16px; stroke: currentColor; fill: none;
-                stroke-width: 1.5; stroke-linecap: square; }
-.nav-item:hover { color: var(--ink); background: var(--line-2); }
-.nav-item.active { color: var(--ink); background: var(--surface); }
-.nav-item.active::before {
-  content: ""; position: absolute; left: -1px; top: 8px; bottom: 8px; width: 2px; background: var(--accent);
+.nav-item svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+.nav-item:hover { color: var(--ink); background: var(--glass-hi); border-color: var(--line-2); }
+.nav-item.active {
+  color: var(--accent); background: var(--accent-bg);
+  border-color: var(--line);
+  box-shadow: inset 0 0 20px rgba(0,255,255,.05);
 }
-.nav-item .pill { margin: 0; }
-
+@media (prefers-reduced-motion: no-preference) {
+  .nav-item.active::before {
+    content: ""; position: absolute; left: -1px; top: 8px; bottom: 8px; width: 2px;
+    background: var(--accent);
+    animation: breathe 2.8s ease-in-out infinite;
+  }
+}
 .nav-user {
-  margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--line);
+  margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--line-2);
   display: flex; align-items: center; gap: 10px; font-size: 12px;
 }
 .avatar {
-  width: 30px; height: 30px; border: 1.25px solid var(--accent);
-  display: grid; place-items: center;
-  color: var(--accent); font: 600 12px/1 var(--mono);
+  width: 32px; height: 32px; display: grid; place-items: center;
+  color: var(--accent); font: 700 12px/1 var(--disp); position: relative;
 }
-.nav-user b { color: var(--ink); font-weight: 600; letter-spacing: .04em; }
-.nav-user span { color: var(--muted); font-family: var(--mono); font-size: 10px; letter-spacing: .12em; }
+.avatar::before {
+  content: ""; position: absolute; inset: 0;
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  background: var(--accent-bg); border: 0;
+}
+.avatar span { position: relative; z-index: 1; }
+.nav-user b { color: var(--ink); font: 600 12px/1 var(--sans); letter-spacing: .14em; }
+.nav-user small { color: var(--muted); font-family: var(--mono); font-size: 10px; letter-spacing: .18em; display: block; margin-top: 4px; }
 
 /* =========================================================
-   Main content
+   Main
    ========================================================= */
-main {
-  padding: 24px 32px 48px; min-width: 0; position: relative;
-}
-.page-head {
-  display: flex; align-items: baseline; gap: 14px;
-  padding-bottom: 12px; margin-bottom: 6px;
-  border-bottom: 1px solid var(--line);
-}
-.page-head .sec { font: 500 10px/1 var(--mono); color: var(--accent); letter-spacing: .22em; }
-.page-head h1 { font: 600 22px/1.15 var(--mono); margin: 0; letter-spacing: .01em; text-wrap: balance; }
-.page-head .rev { margin-left: auto; font: 500 10px/1 var(--mono); color: var(--muted); letter-spacing: .14em; }
-.subtitle { color: var(--muted); font-size: 12.5px; margin: 8px 0 22px; letter-spacing: .02em; }
+main { padding: 22px 30px 60px; min-width: 0; }
 
-/* Demo banner (informational, not decorative) */
+.page-head {
+  display: flex; align-items: baseline; gap: 16px;
+  padding-bottom: 14px; margin-bottom: 8px;
+  border-bottom: 1px solid var(--line-2);
+  position: relative;
+}
+.page-head::before {
+  content: ""; position: absolute; left: 0; bottom: -1px; width: 60px; height: 1px;
+  background: var(--accent); box-shadow: 0 0 12px var(--accent);
+}
+.page-head .sec {
+  font: 500 10px/1 var(--mono); color: var(--accent-2); letter-spacing: .28em;
+}
+.page-head h1 {
+  font-family: var(--disp); font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ink); text-wrap: balance;
+}
+.page-head .rev {
+  margin-left: auto; font: 400 10px/1.5 var(--mono);
+  color: var(--muted); letter-spacing: .18em;
+}
+.subtitle { color: var(--muted); font-size: 12.5px; margin: 8px 0 20px; letter-spacing: .04em; }
+
+/* Demo banner */
 .demo-banner {
-  display: flex; align-items: center; gap: 12px;
-  padding: 10px 14px; margin-bottom: 20px;
-  border: 1px dashed var(--accent);
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 16px; margin-bottom: 22px;
+  border: 1px solid var(--line);
+  background: var(--glass);
+  backdrop-filter: blur(12px);
   color: var(--ink-2); font-size: 12.5px;
+  letter-spacing: .04em;
 }
 .demo-banner .tag {
-  font: 600 10px/1 var(--mono); letter-spacing: .2em; color: var(--accent);
-  padding: 4px 8px; border: 1px solid var(--accent);
+  font: 600 10px/1 var(--mono); letter-spacing: .28em; color: var(--accent);
+  padding: 5px 10px; border: 1px solid var(--accent);
+  box-shadow: 0 0 14px rgba(0,255,255,.25);
 }
 .demo-banner b { color: var(--ink); }
 
-/* KPI strip ---------------------------------------------------------- */
-.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap); margin-bottom: 24px; }
+/* KPI ---------------------------------------------------- */
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap); margin-bottom: 22px; }
 .kpi {
-  position: relative; padding: 16px 16px 18px;
-  border: 1px solid var(--line);
-  background: var(--surface);
+  position: relative; padding: 18px 18px 20px;
+  border: 1px solid var(--line-2);
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  animation: tile-in .4s ease both;
 }
+.kpi:nth-child(2){ animation-delay: 60ms; }
+.kpi:nth-child(3){ animation-delay: 120ms; }
+.kpi:nth-child(4){ animation-delay: 180ms; }
+
 .kpi .lab {
-  font: 500 10px/1 var(--mono);
-  letter-spacing: .22em; color: var(--muted); text-transform: uppercase;
+  font: 500 10px/1 var(--sans);
+  letter-spacing: .28em; color: var(--muted); text-transform: uppercase;
 }
 .kpi .num-lg {
-  font: 600 34px/1 var(--mono); margin-top: 12px;
-  letter-spacing: -0.01em;
+  font: 400 40px/1 var(--mono);
+  margin-top: 14px; letter-spacing: .02em;
+  color: var(--accent);
+  text-shadow: 0 0 20px rgba(0,255,255,.35);
 }
-.kpi .sub { font: 500 11px/1 var(--mono); color: var(--muted); margin-top: 8px; letter-spacing: .1em; }
-.kpi.attn .num-lg { color: var(--accent); }
-.kpi.warn .num-lg { color: var(--warn); }
-.kpi.ok   .num-lg { color: var(--ok); }
-.kpi.danger .num-lg { color: var(--danger); }
-/* corner crosshairs */
+@media (prefers-reduced-motion: no-preference) {
+  .kpi .num-lg { animation: breathe 3.6s ease-in-out infinite; }
+}
+.kpi .sub {
+  font: 500 10px/1 var(--mono); color: var(--muted);
+  margin-top: 10px; letter-spacing: .22em; text-transform: uppercase;
+}
+.kpi.attn   .num-lg { color: var(--accent);  text-shadow: 0 0 20px rgba(0,255,255,.35); }
+.kpi.warn   .num-lg { color: var(--warn);    text-shadow: 0 0 18px rgba(255,210,76,.30); }
+.kpi.ok     .num-lg { color: var(--ok);      text-shadow: 0 0 18px rgba(0,255,163,.30); }
+.kpi.danger .num-lg { color: var(--danger);  text-shadow: 0 0 20px rgba(255,75,106,.30); }
+
+/* corner brackets */
 .kpi::before, .kpi::after {
-  content: ""; position: absolute; width: 8px; height: 8px;
-  border: 1px solid var(--muted-2);
+  content: ""; position: absolute; width: 12px; height: 12px;
+  border: 1px solid var(--accent-dim);
 }
 .kpi::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
 .kpi::after  { bottom: -1px; right: -1px; border-left: none; border-top: none; }
 
-/* Unit label under a big number */
-.unit { font: 500 11px/1 var(--mono); color: var(--muted); letter-spacing: .14em; margin-left: 6px; }
-
-/* Cards / panels ---------------------------------------------------- */
+/* Cards / panels -------------------------------------------- */
 .card {
-  border: 1px solid var(--line);
-  background: var(--surface);
+  border: 1px solid var(--line-2);
+  background: var(--glass);
+  backdrop-filter: blur(10px);
   margin-bottom: var(--gap); position: relative;
+  animation: tile-in .4s ease both;
 }
 .card::before, .card::after {
-  content: ""; position: absolute; width: 10px; height: 10px;
-  border: 1px solid var(--muted-2);
+  content: ""; position: absolute; width: 12px; height: 12px;
+  border: 1px solid var(--accent-dim);
 }
 .card::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
 .card::after  { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
 .card-head {
-  display: flex; align-items: center; gap: 12px; padding: 12px 18px;
-  border-bottom: 1px dashed var(--line);
+  display: flex; align-items: center; gap: 12px; padding: 14px 18px;
+  border-bottom: 1px dashed var(--line-2);
 }
-.card-head h2 { margin: 0; font: 600 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
-.card-head .id { font: 500 10px/1 var(--mono); color: var(--muted); letter-spacing: .18em; margin-left: -4px; }
+.card-head h2 {
+  font: 600 12px/1 var(--disp); letter-spacing: .22em; text-transform: uppercase;
+  color: var(--ink);
+}
+.card-head .id { font: 400 10px/1 var(--mono); color: var(--accent-dim); letter-spacing: .28em; }
 .card-head .actions { margin-left: auto; display: flex; gap: 8px; }
 
 .toolbar {
   display: flex; gap: 10px; padding: 12px 18px;
-  border-bottom: 1px dashed var(--line); flex-wrap: wrap;
+  border-bottom: 1px dashed var(--line-2); flex-wrap: wrap;
 }
-input, select, .btn {
+input, select, textarea {
   font: 500 13px/1 var(--sans);
-  color: var(--ink); background: transparent;
-  border: 1px solid var(--line);
+  color: var(--ink);
+  background: rgba(0,20,30,.5);
+  border: 1px solid var(--line-2);
   padding: 9px 12px; min-height: 40px;
   border-radius: 0;
   outline: none;
 }
-input::placeholder { color: var(--muted-2); }
-input:hover, select:hover { border-color: var(--muted); }
-input:focus, select:focus { border-color: var(--accent); box-shadow: inset 0 -2px 0 var(--accent); }
-
-.btn { cursor: pointer; }
-.btn:hover { border-color: var(--ink); color: var(--ink); }
-.btn.primary {
-  border-color: var(--accent); color: var(--accent);
-  background: var(--accent-bg); font-weight: 600;
-  letter-spacing: .06em;
+input::placeholder, textarea::placeholder { color: var(--muted-2); font-family: var(--sans); }
+input:hover, select:hover, textarea:hover { border-color: var(--accent-dim); }
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 0 18px rgba(0,255,255,.28) inset;
 }
-.btn.primary:hover { background: var(--accent); color: #0B1220; border-color: var(--accent); }
-.btn.ghost { border-color: transparent; color: var(--muted); min-height: auto; padding: 6px 10px; }
-.btn.ghost:hover { color: var(--accent); background: transparent; }
+select { appearance: none; padding-right: 28px;
+         background-image: linear-gradient(45deg, transparent 45%, var(--accent-dim) 45%, var(--accent-dim) 55%, transparent 55%),
+                           linear-gradient(-45deg, transparent 45%, var(--accent-dim) 45%, var(--accent-dim) 55%, transparent 55%);
+         background-size: 6px 6px, 6px 6px; background-position: right 12px center; background-repeat: no-repeat; }
 
-/* Tables ----------------------------------------------------------- */
+.btn {
+  cursor: pointer; user-select: none;
+  font: 600 12px/1 var(--sans); letter-spacing: .18em; text-transform: uppercase;
+  color: var(--ink-2); background: transparent;
+  border: 1px solid var(--line-2);
+  padding: 10px 14px; min-height: 40px;
+  position: relative; overflow: hidden;
+}
+.btn:hover { color: var(--accent); border-color: var(--accent-dim); background: var(--glass-hi); }
+.btn.primary {
+  color: var(--accent); border-color: var(--accent);
+  background: var(--accent-bg);
+  box-shadow: 0 0 18px rgba(0,255,255,.18), inset 0 0 18px rgba(0,255,255,.05);
+}
+.btn.primary:hover { color: #001820; background: var(--accent); box-shadow: 0 0 26px rgba(0,255,255,.55); }
+.btn.purple { color: var(--purple); border-color: var(--purple); background: var(--purple-bg); box-shadow: 0 0 18px rgba(191,0,255,.18); }
+.btn.ghost { border-color: transparent; color: var(--muted); min-height: auto; padding: 6px 10px; }
+.btn.ghost:hover { color: var(--accent); background: transparent; box-shadow: none; }
+
+/* Tables ---------------------------------------------------- */
 .tbl-scroll { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; }
 th, td {
-  padding: 10px 16px; text-align: left; font-size: 13px;
-  border-bottom: 1px solid var(--line-2); vertical-align: middle;
+  padding: 11px 16px; text-align: left; font-size: 13px;
+  border-bottom: 1px solid var(--line-3); vertical-align: middle;
 }
 th {
-  font: 500 10px/1 var(--mono); color: var(--muted);
-  letter-spacing: .18em; text-transform: uppercase;
-  background: var(--surface-2);
+  font: 500 10px/1 var(--sans); color: var(--accent-dim);
+  letter-spacing: .22em; text-transform: uppercase;
+  background: rgba(0,255,255,0.04); backdrop-filter: blur(6px);
   position: sticky; top: 0; z-index: 1;
 }
 tbody tr { cursor: pointer; }
-tbody tr:hover { background: var(--surface-2); }
+tbody tr:hover { background: var(--glass-hi); }
 td.mono, .mono { font-family: var(--mono); font-size: 12.5px; }
 
-/* Severity stripe on rows: 3px inside stripe */
 tr.row-expired td:first-child { box-shadow: inset 3px 0 0 var(--danger); }
 tr.row-duesoon td:first-child { box-shadow: inset 3px 0 0 var(--warn); }
 tr.row-ok      td:first-child { box-shadow: inset 3px 0 0 var(--ok); }
 
-/* Pills ------------------------------------------------------------ */
+/* Pills ----------------------------------------------------- */
 .pill {
   display: inline-flex; align-items: center; gap: 6px;
-  font: 500 10px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase;
-  padding: 4px 8px; border: 1px solid currentColor;
+  font: 500 10px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase;
+  padding: 5px 10px; border: 1px solid currentColor;
 }
 .pill .dot { width: 6px; height: 6px; background: currentColor; }
-.pill-ok      { color: var(--ok); }
-.pill-warn    { color: var(--warn); }
-.pill-danger  { color: var(--danger); }
-.pill-muted   { color: var(--muted); border-color: var(--line); }
-.pill-accent  { color: var(--accent); }
+@media (prefers-reduced-motion: no-preference) {
+  .pill .dot { animation: breathe 2.4s ease-in-out infinite; }
+}
+.pill-ok      { color: var(--ok);     background: var(--ok-bg); }
+.pill-warn    { color: var(--warn);   background: var(--warn-bg); }
+.pill-danger  { color: var(--danger); background: var(--danger-bg); }
+.pill-muted   { color: var(--muted);  border-color: var(--line-2); }
+.pill-accent  { color: var(--accent); background: var(--accent-bg); }
+.pill-purple  { color: var(--purple); background: var(--purple-bg); }
 
-/* BOM tree --------------------------------------------------------- */
-.bom { padding: 16px 22px 22px; }
+/* Owner chip (Doria / Ann / Sanyin) */
+.owner {
+  display: inline-flex; align-items: center; gap: 6px;
+  font: 500 11px/1 var(--mono); color: var(--purple); letter-spacing: .18em; text-transform: uppercase;
+}
+.owner .dot { width: 6px; height: 6px; background: var(--purple);
+              box-shadow: 0 0 8px var(--purple); }
+@media (prefers-reduced-motion: no-preference) {
+  .owner .dot { animation: breathe 2.6s ease-in-out infinite; }
+}
+
+/* BOM tree ------------------------------------------------- */
+.bom { padding: 16px 20px 20px; }
 .bom-hint {
-  font: 500 10px/1 var(--mono); letter-spacing: .16em;
+  font: 500 10px/1 var(--mono); letter-spacing: .22em;
   color: var(--muted); text-transform: uppercase;
-  padding-bottom: 12px; border-bottom: 1px dashed var(--line);
+  padding-bottom: 12px; border-bottom: 1px dashed var(--line-2);
   margin-bottom: 12px;
 }
 .tree { list-style: none; margin: 0; padding: 0; }
 .tree ul {
-  list-style: none; margin: 2px 0 2px 20px; padding: 0 0 0 14px;
-  border-left: 1px dashed var(--muted-2);
+  list-style: none; margin: 2px 0 2px 22px; padding: 0 0 0 14px;
+  border-left: 1px dashed var(--line);
 }
 .tree li { padding: 3px 0; }
 .node {
   display: grid;
-  grid-template-columns: 18px minmax(0,1fr) 74px 84px 120px;
+  grid-template-columns: 18px minmax(0,1fr) 70px 90px 130px;
   gap: 12px; align-items: center;
-  padding: 5px 10px; cursor: pointer;
+  padding: 6px 10px; cursor: pointer;
   border-left: 2px solid transparent;
 }
-.node:hover { background: var(--surface-2); border-left-color: var(--accent); }
+.node:hover { background: var(--glass-hi); border-left-color: var(--accent); }
 .node .tog {
-  cursor: pointer; color: var(--muted); text-align: center;
+  cursor: pointer; color: var(--accent); text-align: center;
   font: 600 10px/16px var(--mono); user-select: none;
   border: 1px solid var(--line); width: 16px; height: 16px; display: inline-grid; place-items: center;
+  background: var(--accent-bg);
 }
-.node .tog.leaf { border-color: transparent; color: var(--muted-2); }
-.node .pn   { font: 600 12.5px/1.2 var(--mono); color: var(--ink); letter-spacing: .04em; }
-.node .nm   { color: var(--ink-2); font-size: 12.5px; }
-.node .qty  { font: 500 11px/1 var(--mono); color: var(--muted); text-align: right; letter-spacing: .06em; }
-.node .wg   { font: 500 11px/1 var(--mono); color: var(--muted); text-align: right; letter-spacing: .06em; }
-.node .pct  { font: 500 11px/1 var(--mono); color: var(--muted); display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+.node .tog.leaf { border-color: transparent; color: var(--muted-2); background: transparent; }
+.node .pn { font: 400 12.5px/1.2 var(--mono); color: var(--ink); letter-spacing: .06em; }
+.node .nm { color: var(--ink-2); font-size: 12.5px; }
+.node .qty, .node .wg { font: 400 11px/1 var(--mono); color: var(--muted); text-align: right; letter-spacing: .06em; }
+.node .pct { font: 400 11px/1 var(--mono); color: var(--muted); display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
 .node.obsolete .pn { color: var(--danger); text-decoration: line-through; }
 li.hidden > ul { display: none; }
 
-/* Meter (weight%) — dashed track, orange fill only for the leading row */
-.meter { height: 4px; width: 60px; border: 1px solid var(--line); position: relative; }
+/* Meter */
+.meter {
+  height: 4px; width: 60px; border: 1px solid var(--line-2);
+  position: relative; overflow: hidden;
+}
 .meter > i { display: block; height: 100%; background: var(--muted); }
-.meter.hot > i { background: var(--accent); }
+.meter.hot > i { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
 
-/* Risk row (dashboard bottom) -------------------------------------- */
+/* Risk row ------------------------------------------------- */
 .risk-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding: 18px 20px; }
-.risk .lab {
-  font: 500 10px/1 var(--mono); letter-spacing: .18em; color: var(--muted); text-transform: uppercase;
+.risk .lab { font: 500 10px/1 var(--sans); letter-spacing: .22em; color: var(--muted); text-transform: uppercase; }
+.risk .val { font: 400 26px/1.05 var(--mono); margin-top: 12px; letter-spacing: .04em; color: var(--ink); }
+.risk .val small { font: 500 12px/1 var(--mono); color: var(--muted); margin-left: 8px; letter-spacing: .14em; text-transform: uppercase; }
+.risk .bar {
+  height: 6px; border: 1px solid var(--line-2); margin-top: 12px; position: relative; overflow: hidden;
 }
-.risk .val { font: 600 26px/1.05 var(--mono); margin-top: 10px; }
-.risk .val small { font: 500 12px/1 var(--mono); color: var(--muted); margin-left: 6px; letter-spacing: .1em; }
-.risk .bar { height: 6px; border: 1px solid var(--line); margin-top: 10px; position: relative; }
 .risk .bar > i { display: block; height: 100%; }
-.risk .bar > i.ok      { background: var(--ok); }
-.risk .bar > i.warn    { background: var(--warn); }
-.risk .bar > i.danger  { background: var(--danger); }
-.risk .bar > i.attn    { background: var(--accent); }
+.risk .bar > i.ok      { background: var(--ok);     box-shadow: 0 0 12px var(--ok); }
+.risk .bar > i.warn    { background: var(--warn);   box-shadow: 0 0 12px var(--warn); }
+.risk .bar > i.danger  { background: var(--danger); box-shadow: 0 0 12px var(--danger); }
 
-/* Theme toggle ----------------------------------------------------- */
-.theme-toggle {
-  position: fixed; right: 18px; bottom: 18px; z-index: 20;
-  background: var(--bg); border: 1px solid var(--accent); color: var(--accent);
-  padding: 8px 14px; font: 600 11px/1 var(--mono); letter-spacing: .18em;
-  cursor: pointer; text-transform: uppercase;
+/* HUD panel: hero ring (dashboard right-side) -------------- */
+.hud-ring {
+  width: 160px; height: 160px; position: relative;
 }
-.theme-toggle:hover { background: var(--accent); color: #0B1220; }
+.hud-ring svg { width: 100%; height: 100%; }
+@media (prefers-reduced-motion: no-preference) {
+  .hud-ring .r-outer { animation: ring-spin 40s linear infinite; transform-origin: center; }
+  .hud-ring .r-inner { animation: ring-spin 24s linear infinite reverse; transform-origin: center; }
+  .hud-ring .r-dash  { animation: ring-dash 6s linear infinite; }
+}
+.hud-tile { display: grid; grid-template-columns: 1fr 160px; align-items: center; padding: 20px; gap: 20px; }
+.hud-tile .info h3 { font: 600 12px/1 var(--disp); letter-spacing: .22em; text-transform: uppercase; color: var(--accent); }
+.hud-tile .info .big { font: 400 40px/1 var(--mono); color: var(--ink); margin-top: 12px; text-shadow: 0 0 18px rgba(0,255,255,.25); }
+.hud-tile .info .desc { font-size: 12px; color: var(--muted); margin-top: 8px; letter-spacing: .04em; }
 
-/* Panels ----------------------------------------------------------- */
+/* Panels toggle -------------------------------------------- */
 .panel { display: none; }
 .panel.on { display: block; }
 
-/* Owner chip inline */
-.owner {
+/* =========================================================
+   Modal (HUD glass form)
+   ========================================================= */
+.modal-scrim {
+  position: fixed; inset: 0; z-index: 40;
+  background: rgba(4, 8, 14, 0.72);
+  backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.modal-scrim.on { display: flex; }
+.modal {
+  width: min(720px, 100%);
+  max-height: 92vh; overflow: auto;
+  background: linear-gradient(180deg, rgba(20,40,70,.6), rgba(10,20,40,.65));
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--line);
+  box-shadow: 0 0 60px rgba(0,255,255,.15), inset 0 0 40px rgba(0,255,255,.04);
+  position: relative;
+}
+.modal::before, .modal::after {
+  content: ""; position: absolute; width: 16px; height: 16px;
+  border: 1px solid var(--accent);
+}
+.modal::before { top: -1px; left: -1px; border-right: none; border-bottom: none; box-shadow: 0 0 12px var(--accent); }
+.modal::after  { bottom: -1px; right: -1px; border-left: none; border-top: none; box-shadow: 0 0 12px var(--accent); }
+
+.modal-head {
+  display: flex; align-items: center; gap: 14px; padding: 18px 22px;
+  border-bottom: 1px dashed var(--line-2);
+}
+.modal-head .sec-tag {
+  font: 500 10px/1 var(--mono); letter-spacing: .28em; color: var(--accent);
+  border: 1px solid var(--accent); padding: 5px 10px;
+}
+.modal-head h2 { font: 600 14px/1 var(--disp); letter-spacing: .22em; text-transform: uppercase; }
+.modal-head .close {
+  margin-left: auto; background: transparent; border: 1px solid var(--line-2);
+  color: var(--muted); width: 32px; height: 32px; cursor: pointer;
+  font: 400 14px/1 var(--mono);
+}
+.modal-head .close:hover { color: var(--accent); border-color: var(--accent); }
+
+.modal-body { padding: 22px; display: grid; gap: 18px; }
+.form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px 20px; }
+.form-grid.wide { grid-template-columns: 1fr; }
+.field { display: flex; flex-direction: column; gap: 6px; position: relative; }
+.field label {
+  font: 500 10px/1 var(--sans); letter-spacing: .22em; text-transform: uppercase;
+  color: var(--muted);
+  display: flex; align-items: center; gap: 6px;
+}
+.field label.req::before {
+  content: ""; width: 6px; height: 6px; background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+}
+.field input, .field select, .field textarea {
+  background: transparent; border: 0; border-bottom: 1px solid var(--line-2);
+  padding: 8px 4px; min-height: 36px;
+  font: 500 14px/1.4 var(--sans); color: var(--ink);
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-bottom-color: var(--accent);
+  box-shadow: 0 1px 0 var(--accent), 0 8px 20px -12px var(--accent);
+}
+.field textarea { min-height: 96px; resize: vertical; font-family: var(--sans); }
+.field .hint { font: 400 10px/1.4 var(--mono); color: var(--muted-2); letter-spacing: .12em; }
+
+.section-title {
+  font: 600 10px/1 var(--disp); letter-spacing: .28em; text-transform: uppercase;
+  color: var(--accent-dim);
+  padding-bottom: 8px; border-bottom: 1px dashed var(--line-2);
+  display: flex; align-items: center; gap: 10px;
+}
+.section-title .idx {
+  width: 22px; height: 22px; display: grid; place-items: center;
+  border: 1px solid var(--accent); color: var(--accent);
+  font: 400 10px/1 var(--mono);
+}
+
+.chip-row { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 4px 4px; }
+.chip {
   display: inline-flex; align-items: center; gap: 6px;
-  font: 500 11px/1 var(--mono); color: var(--accent); letter-spacing: .1em;
+  font: 500 10px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase;
+  padding: 5px 9px; border: 1px solid var(--line);
+  color: var(--ink-2); background: var(--glass-hi);
 }
-.owner .dot { width: 6px; height: 6px; background: var(--accent); }
+.chip .x { color: var(--muted); cursor: pointer; }
+.chip .x:hover { color: var(--danger); }
 
-/* Vertical section marker for hero (very restrained) */
+.modal-foot {
+  display: flex; align-items: center; gap: 12px; padding: 16px 22px;
+  border-top: 1px dashed var(--line-2); background: rgba(0,0,0,.15);
+}
+.modal-foot .flow {
+  flex: 1; height: 3px; background: rgba(0,255,255,.06); position: relative; overflow: hidden;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .modal-foot .flow::after {
+    content: ""; position: absolute; inset: 0; width: 30%;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    animation: bar-flow 2.6s ease-in-out infinite;
+  }
+}
+
+/* Theme toggle */
+.theme-toggle {
+  position: fixed; right: 20px; bottom: 20px; z-index: 20;
+  background: var(--glass); backdrop-filter: blur(10px);
+  border: 1px solid var(--accent); color: var(--accent);
+  padding: 10px 16px; font: 600 11px/1 var(--sans); letter-spacing: .22em;
+  cursor: pointer; text-transform: uppercase;
+  box-shadow: 0 0 22px rgba(0,255,255,.15);
+}
+.theme-toggle:hover { background: var(--accent); color: #001820; }
+
+/* Vertical mark */
 .v-mark {
-  position: absolute; right: 12px; top: 90px;
+  position: absolute; right: 12px; top: 130px;
   writing-mode: vertical-rl; transform: rotate(180deg);
-  font: 500 9.5px/1 var(--mono); letter-spacing: .3em;
+  font: 500 9.5px/1 var(--mono); letter-spacing: .35em;
   color: var(--muted-2); text-transform: uppercase;
+  pointer-events: none;
 }
 
-/* Responsive ------------------------------------------------------- */
+/* Responsive */
 @media (max-width: 1024px) {
   .kpis { grid-template-columns: repeat(2, 1fr); }
   .risk-row { grid-template-columns: 1fr; gap: 14px; }
+  .hud-tile { grid-template-columns: 1fr; }
+  .hud-ring { margin: 0 auto; }
+  .form-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 780px) {
   .shell { grid-template-columns: 1fr; }
-  aside.nav { flex-direction: row; overflow-x: auto; padding: 8px; gap: 4px;
-              border-right: none; border-bottom: 1px solid var(--line); }
-  aside.nav::before { display: none; }
+  aside.nav { flex-direction: row; overflow-x: auto; padding: 8px;
+              border-right: none; border-bottom: 1px solid var(--line-2); }
   .brand, .nav-sec, .nav-user { display: none; }
   .nav-item { grid-template-columns: 18px auto auto; padding: 8px 12px; min-height: 44px; }
   main { padding: 16px; }
@@ -406,133 +631,184 @@ li.hidden > ul { display: none; }
 }
 </style>
 
+<div class="scan"></div>
+
 <div class="shell">
-  <!-- ================ SIDEBAR ================ -->
+  <!-- ============ SIDEBAR ============ -->
   <aside class="nav">
     <div class="brand">
-      <div class="brand-mark">GP</div>
+      <div class="brand-mark">
+        <svg viewBox="0 0 36 36" fill="none">
+          <polygon points="18,2 33,10 33,26 18,34 3,26 3,10" stroke="currentColor" stroke-width="1.2" style="color: var(--accent);"/>
+          <polygon points="18,7 28,12.5 28,23.5 18,29 8,23.5 8,12.5" stroke="currentColor" stroke-width="0.8" fill="rgba(0,255,255,.08)" style="color: var(--accent-dim);"/>
+        </svg>
+        <span style="position:relative; z-index: 1;">GP</span>
+      </div>
       <div>
-        <div class="brand-name">GPBOM</div>
-        <small>REV.0.1 · PREVIEW</small>
+        <div class="name">GPBOM</div>
+        <span class="sub">v0.1 · 預覽版</span>
       </div>
     </div>
 
-    <div class="nav-sec">Workspace</div>
+    <div class="nav-sec">工作台</div>
     <div class="nav-item active" data-tab="dashboard">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
-      <span>OVERVIEW</span>
+      <span>總覽</span>
     </div>
     <div class="nav-item" data-tab="parts">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/><path d="M3 9h18M9 3v18"/></svg>
-      <span>PART MASTER</span>
+      <span>料號主檔</span>
       <span class="pill pill-muted">1,247</span>
     </div>
     <div class="nav-item" data-tab="bom">
       <svg viewBox="0 0 24 24"><path d="M12 3v6M12 15v6M5 12h6M13 12h6"/><rect x="10" y="10" width="4" height="4"/></svg>
-      <span>BOM EXPLODE</span>
+      <span>BOM 展開</span>
     </div>
     <div class="nav-item" data-tab="substance">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4.35-4.35"/></svg>
-      <span>SUBSTANCE</span>
+      <span>物質搜尋</span>
     </div>
 
-    <div class="nav-sec">Compliance</div>
+    <div class="nav-sec">合規管理</div>
     <div class="nav-item" data-tab="docs">
       <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg>
-      <span>DOC EXPIRY</span>
+      <span>過期文件</span>
       <span class="pill pill-danger">14</span>
     </div>
     <div class="nav-item" data-tab="pcn">
       <svg viewBox="0 0 24 24"><path d="M20 12H4M14 6l-6 6 6 6"/></svg>
-      <span>PCN CHANGE</span>
+      <span>PCN 變更</span>
     </div>
     <div class="nav-item" data-tab="claims">
       <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
-      <span>CLAIMS</span>
+      <span>待辦認領</span>
       <span class="pill pill-warn">6</span>
     </div>
 
     <div class="nav-user">
-      <div class="avatar">D</div>
-      <div><b>DORIA</b><span>ADMIN · UTC+8</span></div>
+      <div class="avatar"><span>D</span></div>
+      <div>
+        <b>DORIA</b>
+        <small>管理員 · UTC+8</small>
+      </div>
     </div>
   </aside>
 
-  <!-- ================ MAIN ================ -->
+  <!-- ============ MAIN ============ -->
   <main>
     <div class="demo-banner">
       <span class="tag">DEMO</span>
-      <span>離線預覽 · 資料為示範 · 上線版本含 PostgreSQL 資料庫、登入、多人協作與稽核紀錄。</span>
+      <span>此為離線預覽,資料為示範用途。上線版含 PostgreSQL 資料庫、登入驗證、多人協作與稽核紀錄。點右上方按鈕可預覽<b>新增 PCN 表單</b>。</span>
     </div>
 
     <!-- ---------------- OVERVIEW ---------------- -->
     <section class="panel on" data-panel="dashboard">
-      <span class="v-mark">SEC.00 / HOME</span>
+      <span class="v-mark">SEC.00 / OVERVIEW</span>
       <div class="page-head">
         <span class="sec">SEC.00</span>
-        <h1>COMPLIANCE OVERVIEW</h1>
-        <span class="rev">2026-09-03 · SYNC 00:02 AGO</span>
+        <h1>合規狀態總覽</h1>
+        <span class="rev">2026-09-03 · 同步 00:02 前</span>
       </div>
 
       <div class="kpis">
         <div class="kpi">
-          <div class="lab">Active parts</div>
+          <div class="lab">使用中料號</div>
           <div class="num-lg">1,124</div>
-          <div class="sub">+3 THIS WEEK</div>
+          <div class="sub">本週 +3</div>
         </div>
         <div class="kpi danger">
-          <div class="lab">Expired docs</div>
+          <div class="lab">已過期文件</div>
           <div class="num-lg">14</div>
-          <div class="sub">SDS 4 · TEST 10</div>
+          <div class="sub">SDS 4 · 測報 10</div>
         </div>
         <div class="kpi warn">
-          <div class="lab">Due &lt; 30D</div>
+          <div class="lab">30 天內到期</div>
           <div class="num-lg">37</div>
-          <div class="sub">RENEW REQUIRED</div>
+          <div class="sub">需重新驗證</div>
         </div>
         <div class="kpi attn">
-          <div class="lab">PCN this month</div>
+          <div class="lab">本月 PCN</div>
           <div class="num-lg">08</div>
-          <div class="sub">ALL REVIEWED</div>
+          <div class="sub">全部已審核</div>
         </div>
       </div>
 
       <div class="card">
         <div class="card-head">
-          <h2>Recent PCN</h2>
+          <h2>合規狀態</h2><span class="id">/ HUD.OK</span>
+          <div class="actions"><button class="btn ghost">詳細指標 →</button></div>
+        </div>
+        <div class="hud-tile">
+          <div class="info">
+            <h3>整體合規度</h3>
+            <div class="big">98.4<span style="font-size:20px; color: var(--muted); margin-left:6px;">%</span></div>
+            <div class="desc">1,124 筆使用中料號中,1,106 筆通過所有法規檢核。剩餘 18 筆為文件缺失或到期,已列入認領佇列。</div>
+          </div>
+          <div class="hud-ring">
+            <svg viewBox="0 0 200 200" fill="none">
+              <circle cx="100" cy="100" r="80" stroke="rgba(0,255,255,.10)" stroke-width="0.8"/>
+              <g class="r-outer" style="transform-origin:100px 100px;">
+                <circle cx="100" cy="100" r="80" stroke="var(--accent-dim)" stroke-width="1" stroke-dasharray="4 6"/>
+                <line x1="100" y1="12" x2="100" y2="24" stroke="var(--accent)" stroke-width="1.4"/>
+                <line x1="100" y1="176" x2="100" y2="188" stroke="var(--accent)" stroke-width="1.4"/>
+                <line x1="12" y1="100" x2="24" y2="100" stroke="var(--accent)" stroke-width="1.4"/>
+                <line x1="176" y1="100" x2="188" y2="100" stroke="var(--accent)" stroke-width="1.4"/>
+              </g>
+              <circle cx="100" cy="100" r="62" stroke="var(--line-2)" stroke-width="0.8"/>
+              <g class="r-inner" style="transform-origin:100px 100px;">
+                <circle cx="100" cy="100" r="62"
+                        stroke="var(--accent)" stroke-width="2.4"
+                        stroke-dasharray="240 60" pathLength="300"
+                        transform="rotate(-90 100 100)"
+                        style="filter: drop-shadow(0 0 6px var(--accent));"/>
+              </g>
+              <circle cx="100" cy="100" r="42" stroke="var(--line-2)" stroke-width="0.6" stroke-dasharray="2 3"/>
+              <text x="100" y="98" text-anchor="middle" fill="var(--ink)" font-family="Share Tech Mono" font-size="18">OK</text>
+              <text x="100" y="115" text-anchor="middle" fill="var(--accent-dim)" font-family="Share Tech Mono" font-size="9" letter-spacing="2">SYSTEM</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>近期 PCN 變更</h2>
           <span class="id">/ CHG.LATEST</span>
-          <div class="actions"><button class="btn ghost">SEE ALL &rarr;</button></div>
+          <div class="actions">
+            <button class="btn primary" onclick="openModal('pcnModal')">+ 新增 PCN</button>
+            <button class="btn ghost">全部 →</button>
+          </div>
         </div>
         <div class="tbl-scroll"><table>
           <thead><tr>
-            <th>PCN No.</th><th>Type</th><th>Impacted PN</th><th>Supplier</th>
-            <th>Notify</th><th>Effective</th><th>Status</th>
+            <th>系統 PCN</th><th>類型</th><th>影響料號</th><th>供應商</th>
+            <th>通知日</th><th>實施日</th><th>狀態</th>
           </tr></thead>
           <tbody>
-            <tr class="row-ok"><td class="mono">PCN00000128</td><td>PROC. CHANGE</td><td class="mono">MCU-STM32F103C8T6</td><td>ST Micro</td><td class="mono">2026-08-14</td><td class="mono">2026-10-01</td><td><span class="pill pill-ok"><span class="dot"></span>Reviewed</span></td></tr>
-            <tr class="row-ok"><td class="mono">PCN00000127</td><td>MATERIAL SWAP</td><td class="mono">CAP-C0603-100nF +2</td><td>Murata</td><td class="mono">2026-08-11</td><td class="mono">2026-09-15</td><td><span class="pill pill-ok"><span class="dot"></span>Reviewed</span></td></tr>
-            <tr class="row-duesoon"><td class="mono">PCN00000126</td><td>EOL</td><td class="mono">LED-3528-R</td><td>Everlight</td><td class="mono">2026-08-05</td><td class="mono">2026-12-31</td><td><span class="pill pill-warn"><span class="dot"></span>In progress</span></td></tr>
-            <tr class="row-ok"><td class="mono">PCN00000125</td><td>SUPPLIER SWAP</td><td class="mono">RES-0805-10K</td><td>Yageo &rarr; Walsin</td><td class="mono">2026-07-29</td><td class="mono">2026-09-01</td><td><span class="pill pill-ok"><span class="dot"></span>Reviewed</span></td></tr>
+            <tr class="row-ok"><td class="mono">PCN00000128</td><td>製程變更</td><td class="mono">MCU-STM32F103C8T6</td><td>ST Micro</td><td class="mono">2026-08-14</td><td class="mono">2026-10-01</td><td><span class="pill pill-ok"><span class="dot"></span>已審核</span></td></tr>
+            <tr class="row-ok"><td class="mono">PCN00000127</td><td>換料</td><td class="mono">CAP-C0603-100nF +2</td><td>Murata</td><td class="mono">2026-08-11</td><td class="mono">2026-09-15</td><td><span class="pill pill-ok"><span class="dot"></span>已審核</span></td></tr>
+            <tr class="row-duesoon"><td class="mono">PCN00000126</td><td>停產</td><td class="mono">LED-3528-R</td><td>Everlight</td><td class="mono">2026-08-05</td><td class="mono">2026-12-31</td><td><span class="pill pill-warn"><span class="dot"></span>進行中</span></td></tr>
+            <tr class="row-ok"><td class="mono">PCN00000125</td><td>換供應商</td><td class="mono">RES-0805-10K</td><td>Yageo → Walsin</td><td class="mono">2026-07-29</td><td class="mono">2026-09-01</td><td><span class="pill pill-ok"><span class="dot"></span>已審核</span></td></tr>
           </tbody>
         </table></div>
       </div>
 
       <div class="card">
-        <div class="card-head"><h2>Regulatory heat map</h2><span class="id">/ RISK.001</span></div>
+        <div class="card-head"><h2>法規風險熱區</h2><span class="id">/ RISK.001</span></div>
         <div class="risk-row">
           <div class="risk">
             <div class="lab">RoHS · Pb · 7439-92-1</div>
-            <div class="val">03 <small>/ 42 PN &gt; 900 PPM</small></div>
+            <div class="val">03 <small>/ 42 料號 &gt; 900 PPM</small></div>
             <div class="bar"><i class="warn" style="width: 7%"></i></div>
           </div>
           <div class="risk">
-            <div class="lab">REACH SVHC · 241 items</div>
-            <div class="val">01 <small>/ REPORT REQUIRED</small></div>
+            <div class="lab">REACH SVHC · 241 項</div>
+            <div class="val">01 <small>/ 需申報</small></div>
             <div class="bar"><i class="danger" style="width: 3%"></i></div>
           </div>
           <div class="risk">
-            <div class="lab">Conflict minerals · Au Ta Sn W</div>
-            <div class="val">28 <small>/ CMRT ON FILE</small></div>
+            <div class="lab">衝突礦產 · Au Ta Sn W</div>
+            <div class="val">28 <small>/ CMRT 已檢附</small></div>
             <div class="bar"><i class="ok" style="width: 100%"></i></div>
           </div>
         </div>
@@ -541,24 +817,24 @@ li.hidden > ul { display: none; }
 
     <!-- ---------------- PARTS ---------------- -->
     <section class="panel" data-panel="parts">
-      <span class="v-mark">SEC.01 / MASTER</span>
+      <span class="v-mark">SEC.01 / PART MASTER</span>
       <div class="page-head">
         <span class="sec">SEC.01</span>
-        <h1>PART MASTER</h1>
-        <span class="rev">1,247 ROWS · 1,124 ACTIVE · 108 OBSOLETE · 15 PENDING</span>
+        <h1>料號主檔</h1>
+        <span class="rev">1,247 筆 · 使用中 1,124 · 已失效 108 · 待審 15</span>
       </div>
       <div class="card">
         <div class="toolbar">
-          <input placeholder="Search PN / name / MPN" style="flex: 1; min-width: 260px;">
-          <select><option>ANY STATUS</option><option>Active</option><option>Obsolete</option><option>Pending</option></select>
-          <select><option>ANY SUPPLIER</option><option>Murata</option><option>ST Micro</option><option>Yageo</option></select>
-          <button class="btn primary">+ NEW PART</button>
-          <button class="btn">IMPORT XLSX</button>
+          <input placeholder="搜尋料號 / 名稱 / MPN..." style="flex: 1; min-width: 260px;">
+          <select><option>全部狀態</option><option>使用中</option><option>已失效</option><option>待審</option></select>
+          <select><option>全部供應商</option><option>Murata</option><option>ST Micro</option><option>Yageo</option></select>
+          <button class="btn primary" onclick="openModal('partModal')">+ 新增料號</button>
+          <button class="btn">匯入 Excel</button>
         </div>
         <div class="tbl-scroll"><table>
           <thead><tr>
-            <th>PN</th><th>Name</th><th>MPN / Mfr</th><th>Supplier</th>
-            <th class="num">Stock</th><th>Last PO</th><th>Status</th><th>Claim</th>
+            <th>料號</th><th>名稱</th><th>MPN / 原廠</th><th>供應商</th>
+            <th class="num">庫存</th><th>最後採購</th><th>狀態</th><th>認領</th>
           </tr></thead>
           <tbody id="partRows"></tbody>
         </table></div>
@@ -570,19 +846,20 @@ li.hidden > ul { display: none; }
       <span class="v-mark">SEC.02 / STRUCTURE</span>
       <div class="page-head">
         <span class="sec">SEC.02</span>
-        <h1>BOM EXPLODE · ASSY-CTRL-01</h1>
-        <span class="rev">REV.C · EFF 2026-06-01 &rarr; NOW · 6 LVL · 47 NODES</span>
+        <h1>BOM 展開 · ASSY-CTRL-01</h1>
+        <span class="rev">Rev.C · 有效 2026-06-01 → 現在 · 6 層 · 47 節點</span>
       </div>
       <div class="card">
         <div class="toolbar">
           <input value="ASSY-CTRL-01" style="width: 220px;">
-          <button class="btn primary">EXPLODE</button>
-          <button class="btn">EXPAND ALL</button>
-          <button class="btn">COLLAPSE ALL</button>
-          <button class="btn ghost">EXPORT XLSX &rarr;</button>
+          <button class="btn primary">展開</button>
+          <button class="btn">全部展開</button>
+          <button class="btn">全部收合</button>
+          <button class="btn purple" onclick="openModal('bomModal')">+ 新增子件</button>
+          <button class="btn ghost">匯出 Excel →</button>
         </div>
         <div class="bom">
-          <div class="bom-hint">Click toggle to fold — <span class="mono">×QTY · WEIGHT(g) · %-OF-PARENT</span></div>
+          <div class="bom-hint">點三角形展開 / 收合 — <span class="mono">×數量 · 重量 g · 占父件%</span></div>
           <ul class="tree" id="bomTree"></ul>
         </div>
       </div>
@@ -593,22 +870,22 @@ li.hidden > ul { display: none; }
       <span class="v-mark">SEC.03 / SUBSTANCE</span>
       <div class="page-head">
         <span class="sec">SEC.03</span>
-        <h1>SUBSTANCE SEARCH</h1>
-        <span class="rev">CROSS-PRODUCT LOOKUP BY CAS · NAME</span>
+        <h1>物質全產品搜尋</h1>
+        <span class="rev">依 CAS No. 或英文物質名跨全部料號查詢</span>
       </div>
       <div class="card">
         <div class="toolbar">
           <input value="1333-86-4" placeholder="CAS No." style="width: 200px;">
-          <input value="Carbon Black" placeholder="or substance name" style="width: 240px;">
-          <button class="btn primary">SEARCH</button>
-          <span style="margin-left:auto; align-self: center; font: 500 11px/1 var(--mono); color: var(--muted); letter-spacing: .18em; text-transform: uppercase;">
-            07 HITS
+          <input value="Carbon Black" placeholder="或物質名稱" style="width: 240px;">
+          <button class="btn primary">搜尋</button>
+          <span style="margin-left:auto; align-self: center; font: 500 11px/1 var(--mono); color: var(--accent-dim); letter-spacing: .22em; text-transform: uppercase;">
+            共 07 筆
           </span>
         </div>
         <div class="tbl-scroll"><table>
           <thead><tr>
-            <th>Substance</th><th>CAS</th><th>PN</th><th>Part name</th><th>Material</th>
-            <th class="num">Weight (g)</th><th class="num">PPM</th><th>Regulation</th>
+            <th>物質</th><th>CAS</th><th>料號</th><th>零件名稱</th><th>均質材料</th>
+            <th class="num">重量 (g)</th><th class="num">PPM</th><th>法規</th>
           </tr></thead>
           <tbody id="subRows"></tbody>
         </table></div>
@@ -617,17 +894,21 @@ li.hidden > ul { display: none; }
 
     <!-- ---------------- DOCS ---------------- -->
     <section class="panel" data-panel="docs">
-      <span class="v-mark">SEC.04 / EXPIRY</span>
+      <span class="v-mark">SEC.04 / DOC EXPIRY</span>
       <div class="page-head">
         <span class="sec">SEC.04</span>
-        <h1>DOCUMENT EXPIRY</h1>
-        <span class="rev">TEST &gt; 1Y · SDS &gt; 3Y · DUE &lt;30D AMBER · EXPIRED RED</span>
+        <h1>過期文件 / 到期預警</h1>
+        <span class="rev">測報 &gt; 1 年 · SDS &gt; 3 年 · 30 天內到期黃色 · 已過期紅色</span>
       </div>
       <div class="card">
+        <div class="toolbar">
+          <button class="btn primary" onclick="openModal('docModal')">+ 新增文件</button>
+          <select><option>全部類型</option><option>測試報告</option><option>SDS</option><option>聲明書</option><option>CMRT</option></select>
+        </div>
         <div class="tbl-scroll"><table>
           <thead><tr>
-            <th>Kind</th><th>Doc No.</th><th>Target PN</th><th>Supplier</th>
-            <th>Issued</th><th>Expires</th><th>ΔT</th><th>Claim</th>
+            <th>類型</th><th>編號</th><th>對象料號</th><th>供應商</th>
+            <th>發行日</th><th>到期日</th><th>ΔT</th><th>認領</th>
           </tr></thead>
           <tbody id="docRows"></tbody>
         </table></div>
@@ -636,25 +917,25 @@ li.hidden > ul { display: none; }
 
     <!-- ---------------- PCN ---------------- -->
     <section class="panel" data-panel="pcn">
-      <span class="v-mark">SEC.05 / CHANGE</span>
+      <span class="v-mark">SEC.05 / CHANGE LOG</span>
       <div class="page-head">
         <span class="sec">SEC.05</span>
-        <h1>PCN CHANGE LOG</h1>
-        <span class="rev">INTERNAL PCN · SUPPLIER PCN X-REF · IMPACT ANALYSIS</span>
+        <h1>PCN 變更紀錄</h1>
+        <span class="rev">系統流水碼 · 供應商 PCN 對照 · 影響範圍分析</span>
       </div>
       <div class="card">
         <div class="toolbar">
-          <button class="btn primary">+ NEW PCN</button>
-          <select><option>ANY TYPE</option><option>Material swap</option><option>Supplier swap</option><option>Process change</option><option>EOL</option></select>
+          <button class="btn primary" onclick="openModal('pcnModal')">+ 新增 PCN</button>
+          <select><option>全部類型</option><option>換料</option><option>換供應商</option><option>製程變更</option><option>停產</option></select>
         </div>
         <div class="tbl-scroll"><table>
-          <thead><tr><th>Internal</th><th>Supplier PCN</th><th>Type</th><th>Impact</th><th>Before &rarr; After</th><th>Effective</th><th>Status</th></tr></thead>
+          <thead><tr><th>系統 PCN</th><th>供應商 PCN</th><th>類型</th><th>影響</th><th>變更前 → 變更後</th><th>實施日</th><th>狀態</th></tr></thead>
           <tbody>
-            <tr class="row-ok"><td class="mono">PCN00000128</td><td class="mono">ST-PCN-2026-0812</td><td>PROC. CHANGE</td><td class="mono">3 PN</td><td class="mono">—</td><td class="mono">2026-10-01</td><td><span class="pill pill-ok"><span class="dot"></span>Reviewed</span></td></tr>
-            <tr class="row-ok"><td class="mono">PCN00000127</td><td class="mono">MUR-CN-8172</td><td>MATERIAL SWAP</td><td class="mono">CAP-C0603-100nF</td><td class="mono">GRM188R71H104K &rarr; GCM188R71H104K</td><td class="mono">2026-09-15</td><td><span class="pill pill-ok"><span class="dot"></span>Reviewed</span></td></tr>
-            <tr class="row-duesoon"><td class="mono">PCN00000126</td><td class="mono">EL-2026-0723</td><td>EOL</td><td class="mono">LED-3528-R</td><td>—</td><td class="mono">2026-12-31</td><td><span class="pill pill-warn"><span class="dot"></span>In progress</span></td></tr>
-            <tr class="row-ok"><td class="mono">PCN00000125</td><td class="mono">YGO-PCN-1104</td><td>SUPPLIER SWAP</td><td class="mono">RES-0805-10K</td><td>Yageo &rarr; Walsin</td><td class="mono">2026-09-01</td><td><span class="pill pill-ok"><span class="dot"></span>Reviewed</span></td></tr>
-            <tr class="row-ok"><td class="mono">PCN00000124</td><td class="mono">TDK-2026-0619</td><td>RAW-MAT.</td><td class="mono">IND-1210-10uH</td><td>Ferrite &rarr; Metal Composite</td><td class="mono">2026-08-01</td><td><span class="pill pill-ok"><span class="dot"></span>Reviewed</span></td></tr>
+            <tr class="row-ok"><td class="mono">PCN00000128</td><td class="mono">ST-PCN-2026-0812</td><td>製程變更</td><td class="mono">3 料號</td><td class="mono">—</td><td class="mono">2026-10-01</td><td><span class="pill pill-ok"><span class="dot"></span>已審核</span></td></tr>
+            <tr class="row-ok"><td class="mono">PCN00000127</td><td class="mono">MUR-CN-8172</td><td>換料</td><td class="mono">CAP-C0603-100nF</td><td class="mono">GRM188R71H104K → GCM188R71H104K</td><td class="mono">2026-09-15</td><td><span class="pill pill-ok"><span class="dot"></span>已審核</span></td></tr>
+            <tr class="row-duesoon"><td class="mono">PCN00000126</td><td class="mono">EL-2026-0723</td><td>停產</td><td class="mono">LED-3528-R</td><td>—</td><td class="mono">2026-12-31</td><td><span class="pill pill-warn"><span class="dot"></span>進行中</span></td></tr>
+            <tr class="row-ok"><td class="mono">PCN00000125</td><td class="mono">YGO-PCN-1104</td><td>換供應商</td><td class="mono">RES-0805-10K</td><td>Yageo → Walsin</td><td class="mono">2026-09-01</td><td><span class="pill pill-ok"><span class="dot"></span>已審核</span></td></tr>
+            <tr class="row-ok"><td class="mono">PCN00000124</td><td class="mono">TDK-2026-0619</td><td>換原料</td><td class="mono">IND-1210-10uH</td><td>Ferrite → Metal Composite</td><td class="mono">2026-08-01</td><td><span class="pill pill-ok"><span class="dot"></span>已審核</span></td></tr>
           </tbody>
         </table></div>
       </div>
@@ -665,19 +946,19 @@ li.hidden > ul { display: none; }
       <span class="v-mark">SEC.06 / TASKS</span>
       <div class="page-head">
         <span class="sec">SEC.06</span>
-        <h1>OPEN CLAIMS</h1>
-        <span class="rev">AUTO-RELEASE ON DOC CREATION</span>
+        <h1>待辦認領</h1>
+        <span class="rev">Sanyin / Ann / Doria · 建立文件後自動釋出</span>
       </div>
       <div class="card">
         <div class="tbl-scroll"><table>
-          <thead><tr><th>PN</th><th>Name</th><th>Reason</th><th>Owner</th><th>Claimed</th><th>Age</th><th></th></tr></thead>
+          <thead><tr><th>料號</th><th>名稱</th><th>待辦原因</th><th>認領人</th><th>認領時間</th><th>已停留</th><th></th></tr></thead>
           <tbody>
-            <tr><td class="mono">CAP-C0603-100nF</td><td>Chip Cap 100nF X7R</td><td>SDS EXPIRED — REQUEST FROM MURATA</td><td><span class="owner"><span class="dot"></span>ANN</span></td><td class="mono">2026-08-29 09:14</td><td class="mono">5d 6h</td><td><button class="btn ghost">RELEASE</button></td></tr>
-            <tr><td class="mono">MCU-STM32F103C8T6</td><td>ARM Cortex-M3 MCU</td><td>PCN IMPACT ANALYSIS</td><td><span class="owner"><span class="dot"></span>DORIA</span></td><td class="mono">2026-08-30 15:41</td><td class="mono">3d 23h</td><td><button class="btn ghost">RELEASE</button></td></tr>
-            <tr><td class="mono">HSG-PC-BLK-01</td><td>ABS Housing</td><td>TEST REPORT &gt; 1 YEAR</td><td><span class="owner"><span class="dot"></span>SANYIN</span></td><td class="mono">2026-09-01 10:22</td><td class="mono">2d 4h</td><td><button class="btn ghost">RELEASE</button></td></tr>
-            <tr><td class="mono">LED-3528-R</td><td>LED 3528 Red</td><td>EOL REPLACEMENT SEARCH</td><td><span class="owner"><span class="dot"></span>DORIA</span></td><td class="mono">2026-09-02 08:00</td><td class="mono">1d 6h</td><td><button class="btn ghost">RELEASE</button></td></tr>
-            <tr><td class="mono">SOL-SAC305-1.0</td><td>Solder Wire SAC305</td><td>REACH SVHC ANNUAL REVIEW</td><td><span class="owner"><span class="dot"></span>ANN</span></td><td class="mono">2026-09-02 16:30</td><td class="mono">22h</td><td><button class="btn ghost">RELEASE</button></td></tr>
-            <tr><td class="mono">RES-0805-10K</td><td>Chip Res 10kΩ</td><td>SUPPLIER SWAP FAI (WALSIN)</td><td><span class="owner"><span class="dot"></span>SANYIN</span></td><td class="mono">2026-09-03 09:05</td><td class="mono">6h</td><td><button class="btn ghost">RELEASE</button></td></tr>
+            <tr><td class="mono">CAP-C0603-100nF</td><td>Chip Cap 100nF X7R</td><td>SDS 過期,需向 Murata 索取新版</td><td><span class="owner"><span class="dot"></span>Ann</span></td><td class="mono">2026-08-29 09:14</td><td class="mono">5d 6h</td><td><button class="btn ghost">釋出</button></td></tr>
+            <tr><td class="mono">MCU-STM32F103C8T6</td><td>ARM Cortex-M3 MCU</td><td>PCN 影響評估</td><td><span class="owner"><span class="dot"></span>Doria</span></td><td class="mono">2026-08-30 15:41</td><td class="mono">3d 23h</td><td><button class="btn ghost">釋出</button></td></tr>
+            <tr><td class="mono">HSG-PC-BLK-01</td><td>ABS 外殼</td><td>測報過期 &gt; 1 年</td><td><span class="owner"><span class="dot"></span>Sanyin</span></td><td class="mono">2026-09-01 10:22</td><td class="mono">2d 4h</td><td><button class="btn ghost">釋出</button></td></tr>
+            <tr><td class="mono">LED-3528-R</td><td>紅光 LED 3528</td><td>EOL 替代料尋找</td><td><span class="owner"><span class="dot"></span>Doria</span></td><td class="mono">2026-09-02 08:00</td><td class="mono">1d 6h</td><td><button class="btn ghost">釋出</button></td></tr>
+            <tr><td class="mono">SOL-SAC305-1.0</td><td>無鉛焊錫 SAC305</td><td>REACH SVHC 年度複查</td><td><span class="owner"><span class="dot"></span>Ann</span></td><td class="mono">2026-09-02 16:30</td><td class="mono">22h</td><td><button class="btn ghost">釋出</button></td></tr>
+            <tr><td class="mono">RES-0805-10K</td><td>Chip Res 10kΩ</td><td>換供應商 Walsin FAI 驗證</td><td><span class="owner"><span class="dot"></span>Sanyin</span></td><td class="mono">2026-09-03 09:05</td><td class="mono">6h</td><td><button class="btn ghost">釋出</button></td></tr>
           </tbody>
         </table></div>
       </div>
@@ -685,74 +966,327 @@ li.hidden > ul { display: none; }
   </main>
 </div>
 
-<button class="theme-toggle" id="themeBtn">TOGGLE THEME</button>
+<!-- ============ MODALS: NEW PCN ============ -->
+<div class="modal-scrim" data-modal="pcnModal">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="sec-tag">SEC.05 / NEW PCN</span>
+      <h2>新增產品變更通知</h2>
+      <button class="close" onclick="closeModal(this)">×</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="section-title"><span class="idx">01</span>基本資訊</div>
+      <div class="form-grid">
+        <div class="field">
+          <label class="req">系統 PCN 流水碼</label>
+          <input value="PCN00000129" readonly>
+          <span class="hint">系統自動配號 · 不可編輯</span>
+        </div>
+        <div class="field">
+          <label>供應商 PCN No.</label>
+          <input placeholder="MUR-CN-8173">
+        </div>
+        <div class="field">
+          <label class="req">變更類型</label>
+          <select>
+            <option>換料 (Material Swap)</option>
+            <option>換供應商 (Supplier Swap)</option>
+            <option>換原廠 (Manufacturer Swap)</option>
+            <option>製程變更 (Process Change)</option>
+            <option>換原料 (Raw Material)</option>
+            <option>停產 (EOL)</option>
+            <option>換產地 (Site Change)</option>
+            <option>其他</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>來源供應商</label>
+          <select>
+            <option>Murata Manufacturing</option>
+            <option>ST Micro</option>
+            <option>Yageo</option>
+            <option>Walsin Technology</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="req">通知日</label>
+          <input type="date" value="2026-09-03">
+        </div>
+        <div class="field">
+          <label class="req">實施日</label>
+          <input type="date" value="2026-11-15">
+        </div>
+      </div>
+
+      <div class="section-title"><span class="idx">02</span>換料 / 換供應商 明細</div>
+      <div class="form-grid">
+        <div class="field">
+          <label>變更前 · 原廠型號</label>
+          <input value="GRM188R71H104K">
+        </div>
+        <div class="field">
+          <label>變更後 · 原廠型號</label>
+          <input value="GCM188R71H104K">
+        </div>
+        <div class="field">
+          <label>變更前 · 原廠</label>
+          <input value="Murata">
+        </div>
+        <div class="field">
+          <label>變更後 · 原廠</label>
+          <input value="Murata">
+        </div>
+      </div>
+
+      <div class="section-title"><span class="idx">03</span>影響清單</div>
+      <div class="form-grid wide">
+        <div class="field">
+          <label>影響料號(模糊比對)</label>
+          <input placeholder="輸入料號關鍵字...">
+          <div class="chip-row">
+            <span class="chip">CAP-C0603-100nF <span class="x">×</span></span>
+            <span class="chip">CAP-C0603-100nF-B <span class="x">×</span></span>
+            <span class="chip">ASSY-CTRL-01 <span class="x">×</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title"><span class="idx">04</span>變更說明</div>
+      <div class="form-grid wide">
+        <div class="field">
+          <label class="req">說明</label>
+          <textarea placeholder="說明本次變更的原因、影響範圍、風險評估..."></textarea>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-foot">
+      <div class="flow"></div>
+      <button class="btn ghost" onclick="closeModal(this)">取消</button>
+      <button class="btn">存為草稿</button>
+      <button class="btn primary">送出審核</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODALS: NEW PART ============ -->
+<div class="modal-scrim" data-modal="partModal">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="sec-tag">SEC.01 / NEW PART</span>
+      <h2>新增料號</h2>
+      <button class="close" onclick="closeModal(this)">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="section-title"><span class="idx">01</span>識別</div>
+      <div class="form-grid">
+        <div class="field"><label class="req">料號</label><input placeholder="CAP-C0603-100nF"><span class="hint">系統強制唯一</span></div>
+        <div class="field"><label class="req">名稱</label><input placeholder="Chip Cap 100nF X7R"></div>
+        <div class="field"><label class="req">類別</label>
+          <select>
+            <option>成品 Assembly</option><option>次組件 Sub-assembly</option>
+            <option>零件 Component</option><option>原料 Raw material</option>
+            <option>包材 Packaging</option>
+          </select>
+        </div>
+        <div class="field"><label>計量單位</label><input value="pcs"></div>
+      </div>
+
+      <div class="section-title"><span class="idx">02</span>來源</div>
+      <div class="form-grid">
+        <div class="field"><label>供應商</label>
+          <select><option>Uniohm</option><option>Murata</option><option>WPI Group</option></select></div>
+        <div class="field"><label>供應商料號</label><input placeholder="UNI-C0603-100n"></div>
+        <div class="field"><label>原廠</label><input placeholder="Murata Manufacturing"></div>
+        <div class="field"><label>原廠 MPN</label><input placeholder="GRM188R71H104K"></div>
+      </div>
+
+      <div class="section-title"><span class="idx">03</span>屬性</div>
+      <div class="form-grid">
+        <div class="field"><label>單件重量 (g)</label><input type="number" step="0.001" placeholder="0.001"></div>
+        <div class="field"><label>初始狀態</label>
+          <select><option>使用中</option><option>待審</option></select></div>
+        <div class="field" style="grid-column: 1 / -1;"><label>備註</label>
+          <textarea placeholder="規格說明、注意事項..."></textarea></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <div class="flow"></div>
+      <button class="btn ghost" onclick="closeModal(this)">取消</button>
+      <button class="btn primary">建立料號</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODALS: NEW BOM LINE ============ -->
+<div class="modal-scrim" data-modal="bomModal">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="sec-tag">SEC.02 / NEW BOM LINE</span>
+      <h2>新增 BOM 子件</h2>
+      <button class="close" onclick="closeModal(this)">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="section-title"><span class="idx">01</span>父件 / 子件</div>
+      <div class="form-grid">
+        <div class="field"><label class="req">父件料號</label><input value="ASSY-CTRL-01" readonly></div>
+        <div class="field"><label class="req">父件版本</label><input value="Rev.C" readonly></div>
+        <div class="field"><label class="req">子件料號(模糊比對)</label>
+          <input placeholder="輸入料號 / 名稱關鍵字..."><span class="hint">會自動比對現有主檔</span></div>
+        <div class="field"><label>位置編號 / Ref-des</label><input placeholder="C1, C2, C3..."></div>
+      </div>
+
+      <div class="section-title"><span class="idx">02</span>數量 / 重量</div>
+      <div class="form-grid">
+        <div class="field"><label class="req">數量</label><input type="number" value="1" min="0" step="0.01"></div>
+        <div class="field"><label>單位</label><input value="pcs"></div>
+        <div class="field"><label>單位重量 (g/父件)</label><input type="number" step="0.0001" placeholder="0.024"></div>
+        <div class="field"><label>備註</label><input placeholder="裝配位置、注意事項"></div>
+      </div>
+
+      <div class="section-title"><span class="idx">03</span>生效範圍</div>
+      <div class="form-grid">
+        <div class="field"><label class="req">生效起</label><input type="date" value="2026-09-03"></div>
+        <div class="field"><label>生效迄(空白=仍有效)</label><input type="date"></div>
+        <div class="field" style="grid-column: 1 / -1;">
+          <label>連結 PCN(若此變更由 PCN 觸發)</label>
+          <select><option>—</option><option>PCN00000128</option><option>PCN00000127</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <div class="flow"></div>
+      <button class="btn ghost" onclick="closeModal(this)">取消</button>
+      <button class="btn primary">加入 BOM</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODALS: NEW DOCUMENT ============ -->
+<div class="modal-scrim" data-modal="docModal">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="sec-tag">SEC.04 / NEW DOC</span>
+      <h2>新增合規文件</h2>
+      <button class="close" onclick="closeModal(this)">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="section-title"><span class="idx">01</span>文件</div>
+      <div class="form-grid">
+        <div class="field"><label class="req">文件類型</label>
+          <select><option>測試報告</option><option>SDS</option><option>聲明書</option><option>CMRT</option><option>EMRT</option><option>調查表</option></select></div>
+        <div class="field"><label class="req">文件編號</label><input placeholder="SGS-RoHS-26000234"></div>
+        <div class="field"><label>標題</label><input placeholder="RoHS 測試報告"></div>
+        <div class="field"><label>語言</label>
+          <select><option>zh-TW</option><option>en</option><option>zh-CN</option></select></div>
+      </div>
+
+      <div class="section-title"><span class="idx">02</span>來源與有效期</div>
+      <div class="form-grid">
+        <div class="field"><label>檢驗機構 / 發行單位</label>
+          <select><option>SGS</option><option>Bureau Veritas</option><option>Intertek</option><option>TÜV</option><option>供應商自行發行</option></select></div>
+        <div class="field"><label>供應商</label>
+          <select><option>Murata</option><option>ST Micro</option><option>Yageo</option></select></div>
+        <div class="field"><label class="req">發行日</label><input type="date"></div>
+        <div class="field"><label>到期日(空白=系統依規則自動計算)</label><input type="date"></div>
+      </div>
+
+      <div class="section-title"><span class="idx">03</span>連結料號</div>
+      <div class="form-grid wide">
+        <div class="field"><label>對象料號(可多選)</label>
+          <input placeholder="輸入料號關鍵字...">
+          <div class="chip-row">
+            <span class="chip">MCU-STM32F103C8T6 <span class="x">×</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title"><span class="idx">04</span>檔案</div>
+      <div class="form-grid wide">
+        <div class="field">
+          <label>上傳 PDF</label>
+          <input type="file" accept="application/pdf">
+          <span class="hint">系統會計算 SHA-256 校驗碼防止內容被替換</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <div class="flow"></div>
+      <button class="btn ghost" onclick="closeModal(this)">取消</button>
+      <button class="btn primary">建立文件</button>
+    </div>
+  </div>
+</div>
+
+<button class="theme-toggle" id="themeBtn">TOGGLE PALETTE</button>
 
 <script>
-// ===== Mock data =====================================================
+// ========= Mock data =========
 const PARTS = [
-  ["ASSY-CTRL-01","Controller assembly Rev.C","STM32-based","In-house",     42,"2026-08-20","active",  "DORIA"],
+  ["ASSY-CTRL-01","控制器組件 Rev.C","STM32-based","In-house",     42,"2026-08-20","active","Doria"],
   ["MCU-STM32F103C8T6","ARM Cortex-M3 MCU","STM32F103C8T6 · ST","WPI Group", 1250,"2026-08-14","active", null],
-  ["CAP-C0603-100nF","Chip Cap 100nF X7R","GRM188R71H104K · Murata","Uniohm", 84300,"2026-08-02","active","ANN"],
+  ["CAP-C0603-100nF","Chip Cap 100nF X7R","GRM188R71H104K · Murata","Uniohm", 84300,"2026-08-02","active","Ann"],
   ["RES-0805-10K","Chip Res 10kΩ 1%","AC0805FR-0710KL · Yageo","Yageo",     51200,"2026-07-29","active", null],
-  ["LED-3528-R","LED 3528 Red","19-217/R6C · Everlight","Everlight", 3400,"2026-07-15","pending","DORIA"],
-  ["SOL-SAC305-1.0","Solder Wire SAC305 1.0mm","SN100C · Nihon Superior","Nihon", 22,"2026-06-30","active","ANN"],
-  ["HSG-PC-BLK-01","Housing ABS Black","—","Uni-Case",     640,"2026-06-11","active","SANYIN"],
-  ["CAP-OLD-100nF-A","Chip Cap 100nF (legacy)","GRM155 · Murata","Uniohm",   0,"2024-03-11","obsolete", null],
+  ["LED-3528-R","LED 3528 Red","19-217/R6C · Everlight","Everlight",         3400,"2026-07-15","pending","Doria"],
+  ["SOL-SAC305-1.0","無鉛焊錫 SAC305","SN100C · Nihon Superior","Nihon",       22,"2026-06-30","active","Ann"],
+  ["HSG-PC-BLK-01","ABS 黑色外殼","—","Uni-Case",                              640,"2026-06-11","active","Sanyin"],
+  ["CAP-OLD-100nF-A","Chip Cap 100nF (已失效)","GRM155 · Murata","Uniohm",     0,"2024-03-11","obsolete", null],
 ];
 
 const BOM = [
-  { pn:"ASSY-CTRL-01", nm:"Controller Assy Rev.C", qty:1, wg:485.0, pct:100, status:"active", children:[
+  { pn:"ASSY-CTRL-01", nm:"控制器組件 Rev.C", qty:1, wg:485.0, pct:100, status:"active", children:[
     { pn:"PCB-CTRL-4L-01", nm:"PCB 4L FR-4 HASL", qty:1, wg:112.0, pct:23.1, status:"active", children:[
-      { pn:"CU-FOIL-35UM", nm:"Cu foil 35μm", qty:1, wg:28.4, pct:25.4, status:"active" },
-      { pn:"FR4-CORE-1.6", nm:"FR-4 glass-epoxy", qty:1, wg:78.2, pct:69.8, status:"active" },
+      { pn:"CU-FOIL-35UM", nm:"銅箔 35μm", qty:1, wg:28.4, pct:25.4, status:"active" },
+      { pn:"FR4-CORE-1.6", nm:"FR-4 玻纖基材", qty:1, wg:78.2, pct:69.8, status:"active" },
     ]},
     { pn:"MCU-STM32F103C8T6", nm:"ARM Cortex-M3 MCU (LQFP-48)", qty:1, wg:0.32, pct:0.07, status:"active", children:[
-      { pn:"MAT-EMC-BLK", nm:"Epoxy mold compound (Carbon Black)", qty:1, wg:0.24, pct:75.0, status:"active" },
-      { pn:"MAT-CU-LF",   nm:"Cu lead-frame ≥99.9%", qty:1, wg:0.06, pct:18.8, status:"active" },
-      { pn:"SOL-BALL",    nm:"Solder joint SnAg", qty:48, wg:0.02, pct:6.3, status:"active" },
+      { pn:"MAT-EMC-BLK", nm:"環氧封裝樹脂 (含 Carbon Black)", qty:1, wg:0.24, pct:75.0, status:"active" },
+      { pn:"MAT-CU-LF",   nm:"銅腳架 Cu ≥99.9%", qty:1, wg:0.06, pct:18.8, status:"active" },
+      { pn:"SOL-BALL",    nm:"焊錫接點 SnAg", qty:48, wg:0.02, pct:6.3, status:"active" },
     ]},
     { pn:"CAP-C0603-100nF", nm:"Chip Cap 100nF X7R", qty:24, wg:0.024, pct:0.005, status:"active" },
     { pn:"RES-0805-10K",    nm:"Chip Res 10kΩ 1%", qty:18, wg:0.018, pct:0.004, status:"active" },
-    { pn:"LED-3528-R",      nm:"LED 3528 Red (EOL)", qty:2, wg:0.05, pct:0.010, status:"pending" },
-    { pn:"HSG-PC-BLK-01",   nm:"Housing ABS Black (Carbon Black)", qty:1, wg:340, pct:70.1, status:"active", children:[
-      { pn:"MAT-ABS-BLK", nm:"ABS resin · black", qty:1, wg:326, pct:95.9, status:"active" },
-      { pn:"MAT-CB",      nm:"Carbon Black (pigment)", qty:1, wg:8.5, pct:2.5, status:"active" },
-      { pn:"MAT-STAB",    nm:"Thermal stabilizer", qty:1, wg:5.5, pct:1.6, status:"active" },
+    { pn:"LED-3528-R",      nm:"LED 3528 Red (EOL 進行中)", qty:2, wg:0.05, pct:0.010, status:"pending" },
+    { pn:"HSG-PC-BLK-01",   nm:"ABS 黑色外殼 (含 Carbon Black)", qty:1, wg:340, pct:70.1, status:"active", children:[
+      { pn:"MAT-ABS-BLK", nm:"ABS 樹脂 · 黑色", qty:1, wg:326, pct:95.9, status:"active" },
+      { pn:"MAT-CB",      nm:"Carbon Black (色料)", qty:1, wg:8.5, pct:2.5, status:"active" },
+      { pn:"MAT-STAB",    nm:"熱穩定劑", qty:1, wg:5.5, pct:1.6, status:"active" },
     ]},
-    { pn:"CAP-OLD-100nF-A", nm:"Chip Cap 100nF (replaced)", qty:0, wg:0, pct:0, status:"obsolete" },
+    { pn:"CAP-OLD-100nF-A", nm:"Chip Cap 100nF (已失效替代)", qty:0, wg:0, pct:0, status:"obsolete" },
   ]}
 ];
 
 const SUBS = [
-  ["Carbon Black","1333-86-4","HSG-PC-BLK-01","Housing ABS Black","ABS resin blend", 8.500, 25000, "REACH · not listed"],
-  ["Carbon Black","1333-86-4","MCU-STM32F103C8T6","MCU package LQFP-48","Epoxy Mold Compound", 0.024, 1000, "REACH · not listed"],
-  ["Carbon Black","1333-86-4","CAP-C0603-100nF","Chip Cap electrode","Ni-electrode paste", 0.0002, 800, "REACH · not listed"],
-  ["Carbon Black","1333-86-4","GSK-EPDM-BLK","EPDM gasket","EPDM rubber", 1.240, 28000, "REACH · not listed"],
-  ["Carbon Black","1333-86-4","CBL-USB-BLK","USB cable jacket","PVC jacket", 3.100, 22500, "REACH · not listed"],
-  ["Carbon Black","1333-86-4","LBL-STICK-BLK","Black label sticker","Ink layer", 0.0080, 6000, "REACH · not listed"],
-  ["Carbon Black","1333-86-4","FILM-PET-BLK","PET protective film","PET film", 0.4200, 3500, "REACH · not listed"],
+  ["Carbon Black","1333-86-4","HSG-PC-BLK-01","ABS 黑色外殼","ABS 樹脂", 8.500, 25000, "REACH · 未列管"],
+  ["Carbon Black","1333-86-4","MCU-STM32F103C8T6","MCU 封裝 LQFP-48","環氧封裝樹脂", 0.024, 1000, "REACH · 未列管"],
+  ["Carbon Black","1333-86-4","CAP-C0603-100nF","Chip Cap 電極","Ni 電極漿", 0.0002, 800, "REACH · 未列管"],
+  ["Carbon Black","1333-86-4","GSK-EPDM-BLK","EPDM 密封條","EPDM 橡膠", 1.240, 28000, "REACH · 未列管"],
+  ["Carbon Black","1333-86-4","CBL-USB-BLK","USB Cable 外皮","PVC 皮層", 3.100, 22500, "REACH · 未列管"],
+  ["Carbon Black","1333-86-4","LBL-STICK-BLK","黑色標籤貼紙","印刷層", 0.0080, 6000, "REACH · 未列管"],
+  ["Carbon Black","1333-86-4","FILM-PET-BLK","PET 保護膜","PET 膜", 0.4200, 3500, "REACH · 未列管"],
 ];
 
 const DOCS = [
-  ["SDS", "MUR-SDS-C0603-2022","CAP-C0603-100nF","Murata",     "2022-03-01","2025-03-01", -186, "expired","ANN"],
+  ["SDS", "MUR-SDS-C0603-2022","CAP-C0603-100nF","Murata",     "2022-03-01","2025-03-01", -186, "expired","Ann"],
   ["SDS", "MUR-SDS-GRM155-2021","CAP-OLD-100nF-A","Murata",   "2021-06-14","2024-06-14", -447, "expired",null],
-  ["TEST","SGS-RoHS-24000123","MCU-STM32F103C8T6","SGS",       "2024-05-20","2025-05-20", -106, "expired","DORIA"],
-  ["TEST","BV-REACH-24-0092","HSG-PC-BLK-01","Bureau Veritas", "2024-11-02","2025-11-02",   60, "duesoon","SANYIN"],
-  ["DECL","YGO-DECL-2025-R08","RES-0805-10K","Yageo",           "2025-08-01","2026-08-01",  -33, "expired",null],
-  ["CMRT","EL-CMRT-2025","LED-3528-R","Everlight",              "2025-09-10","2026-09-10",    7, "duesoon","DORIA"],
-  ["TEST","INT-RoHS-25-0451","RES-0805-10K","Intertek",         "2025-11-15","2026-11-15",   73, "duesoon",null],
-  ["TEST","SGS-PFAS-25-0088","SOL-SAC305-1.0","SGS",            "2025-12-01","2026-12-01",   89, "duesoon","ANN"],
+  ["測報","SGS-RoHS-24000123","MCU-STM32F103C8T6","SGS",       "2024-05-20","2025-05-20", -106, "expired","Doria"],
+  ["測報","BV-REACH-24-0092","HSG-PC-BLK-01","Bureau Veritas", "2024-11-02","2025-11-02",   60, "duesoon","Sanyin"],
+  ["聲明","YGO-DECL-2025-R08","RES-0805-10K","Yageo",           "2025-08-01","2026-08-01",  -33, "expired",null],
+  ["CMRT","EL-CMRT-2025","LED-3528-R","Everlight",              "2025-09-10","2026-09-10",    7, "duesoon","Doria"],
+  ["測報","INT-RoHS-25-0451","RES-0805-10K","Intertek",         "2025-11-15","2026-11-15",   73, "duesoon",null],
+  ["測報","SGS-PFAS-25-0088","SOL-SAC305-1.0","SGS",            "2025-12-01","2026-12-01",   89, "duesoon","Ann"],
 ];
 
-// ===== Renderers ====================================================
+// ========= Renderers =========
 const statusPill = (s) => {
-  const map = { active:["pill-ok","Active"], obsolete:["pill-danger","Obsolete"], pending:["pill-warn","Pending"] };
+  const map = { active:["pill-ok","使用中"], obsolete:["pill-danger","已失效"], pending:["pill-warn","待審"] };
   const [c,t] = map[s]||["pill-muted",s];
   return `<span class="pill ${c}"><span class="dot"></span>${t}</span>`;
 };
 const ownerChip = (o) => o
   ? `<span class="owner"><span class="dot"></span>${o}</span>`
-  : `<button class="btn ghost" style="padding:4px 10px; font-size:10px; letter-spacing:.14em;">CLAIM</button>`;
+  : `<button class="btn ghost" style="padding:4px 10px; font-size:10px;">認領</button>`;
 
 document.getElementById("partRows").innerHTML = PARTS.map(r => `
   <tr>
@@ -810,8 +1344,8 @@ document.getElementById("subRows").innerHTML = SUBS.map(r => `
 document.getElementById("docRows").innerHTML = DOCS.map(r => {
   const cls = r[7] === "expired" ? "row-expired" : (r[7] === "duesoon" ? "row-duesoon" : "row-ok");
   const pill = r[7] === "expired"
-    ? `<span class="pill pill-danger"><span class="dot"></span>${Math.abs(r[6])}d over</span>`
-    : `<span class="pill pill-warn"><span class="dot"></span>${r[6]}d left</span>`;
+    ? `<span class="pill pill-danger"><span class="dot"></span>已過期 ${Math.abs(r[6])}d</span>`
+    : `<span class="pill pill-warn"><span class="dot"></span>剩 ${r[6]}d</span>`;
   return `<tr class="${cls}">
     <td><span class="pill pill-muted">${r[0]}</span></td>
     <td class="mono">${r[1]}</td>
@@ -824,7 +1358,7 @@ document.getElementById("docRows").innerHTML = DOCS.map(r => {
   </tr>`;
 }).join("");
 
-// ===== Tab navigation ===============================================
+// ========= Tab nav =========
 document.querySelectorAll(".nav-item[data-tab]").forEach(el => {
   el.setAttribute("tabindex", "0");
   el.setAttribute("role", "tab");
@@ -837,12 +1371,48 @@ document.querySelectorAll(".nav-item[data-tab]").forEach(el => {
     window.scrollTo({ top: 0, behavior: "instant" });
   };
   el.addEventListener("click", activate);
-  el.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); activate(); } });
+  el.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); activate(); }
+  });
 });
 
-// ===== Theme toggle (blueprint / grey) ==============================
+// ========= Modals =========
+window.openModal = (id) => {
+  const m = document.querySelector(`.modal-scrim[data-modal="${id}"]`);
+  if (m) { m.classList.add("on"); document.body.style.overflow = "hidden"; }
+};
+window.closeModal = (btn) => {
+  const m = btn.closest(".modal-scrim"); m.classList.remove("on");
+  document.body.style.overflow = "";
+};
+document.querySelectorAll(".modal-scrim").forEach(s => {
+  s.addEventListener("click", (e) => { if (e.target === s) { s.classList.remove("on"); document.body.style.overflow = ""; } });
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    document.querySelectorAll(".modal-scrim.on").forEach(s => s.classList.remove("on"));
+    document.body.style.overflow = "";
+  }
+});
+
+// ========= Theme toggle (palette) =========
+let paletteState = 0;
 document.getElementById("themeBtn").addEventListener("click", () => {
-  const cur = document.documentElement.getAttribute("data-theme");
-  document.documentElement.setAttribute("data-theme", cur === "grey" ? "" : "grey");
+  const root = document.documentElement;
+  paletteState = (paletteState + 1) % 2;
+  if (paletteState === 1) {
+    // Electric purple accent variant
+    root.style.setProperty("--accent",     "#BF00FF");
+    root.style.setProperty("--accent-2",   "#8A2BE2");
+    root.style.setProperty("--accent-dim", "rgba(191,0,255,.55)");
+    root.style.setProperty("--accent-bg",  "rgba(191,0,255,.10)");
+    root.style.setProperty("--focus",      "0 0 0 2px rgba(191,0,255,.35), 0 0 20px rgba(191,0,255,.35)");
+  } else {
+    root.style.removeProperty("--accent");
+    root.style.removeProperty("--accent-2");
+    root.style.removeProperty("--accent-dim");
+    root.style.removeProperty("--accent-bg");
+    root.style.removeProperty("--focus");
+  }
 });
 </script>
